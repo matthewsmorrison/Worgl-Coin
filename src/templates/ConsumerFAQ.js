@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export const ConsumerFAQ = () => (
-  <section id="main" class="container">
+  <section id="main" className="container">
     <header>
       <h2>Frequently Asked Questions</h2>
       <p>A list of questions we frequently receive from consumers.</p>
@@ -10,7 +10,7 @@ export const ConsumerFAQ = () => (
 
 
     {/* Content */}
-    <div class="box">
+    <div className="box">
       <h4><strong>What is Universal Basic Income?</strong></h4>
       <p>Universal Basic Income ('UBI') is a scheme in which all citizens are guaranteed a fixed, regular and unconditional
         sum of money from the government. With Artificial Intelligence and other developments threatning many jobs, we

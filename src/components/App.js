@@ -1,93 +1,104 @@
-import React, { Component } from 'react'
-import SimpleStorageContract from '../../build/contracts/SimpleStorage.json'
-import getWeb3 from '../utils/getWeb3'
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
+
+import { getWeb3, getContractInstance, getAccounts} from '../utils/ethereum';
+
+// import templates
 import { ConsumerFAQ } from '../templates/ConsumerFAQ';
 import { BusinessFAQ } from '../templates/BusinessFAQ';
 import { Home } from '../templates/Home';
+import { _404 } from '../templates/Errors';
 
 
-class App extends Component {
-  constructor(props) {
-    super(props)
+// import components
+import { Footer } from './Footer';
+import { Header } from './Header';
+import { ConsumerSignUp } from './consumer/ConsumerSignUp';
+import { ConsumerBuyItems } from './consumer/ConsumerBuyItems';
+import { ConsumerOrders } from './consumer/ConsumerOrders';
+import { BusinessSignUp } from './businesses/BusinessSignUp';
+import { BusinessSupplyItems } from './businesses/BusinessSupplyItems';
+import { BusinessOrders } from './businesses/BusinessOrders';
+import { Administration } from './owner/Administration';
 
-    this.state = {
-      storageValue: 0,
-      web3: null
-    }
-  }
+export class App extends React.Component {
+	constructor(props) {
+		super(props);
 
-  componentWillMount() {
-    // Get network provider and web3 instance.
-    // See utils/getWeb3 for more info.
+		this.state = {
+			ethereum: {
+				web3: null,
+				contractInstance: null,
+				currentAccount: null
+			}
+		};
+	}
 
-    getWeb3
-    .then(results => {
-      this.setState({
-        web3: results.web3
-      })
+	// runs once react component is mounted in order to connect to the blockchain
+	componentDidMount() {
+		// get network provider and web3 instance.
+		// see utils/getWeb3 for more info.
+		getWeb3()
+			.then(web3 => {
+				// console.log(web3);
 
-      // Instantiate contract once web3 provided.
-      this.instantiateContract()
-    })
-    .catch(() => {
-      console.log('Error finding web3.')
-    })
-  }
+				let updatedState = this.state;
+				updatedState.ethereum.web3 = web3;
+				this.setState(updatedState);
 
-  instantiateContract() {
-    /*
-     * SMART CONTRACT EXAMPLE
-     *
-     * Normally these functions would be called in the context of a
-     * state management library, but for convenience I've placed them here.
-     */
+				// get accounts
+				console.log('Get Web3 accounts.');
+				return getAccounts(this.state.ethereum.web3);
+			})
+			.then(accounts => {
+				let currentAccount = accounts[0];
 
-    const contract = require('truffle-contract')
-    const simpleStorage = contract(SimpleStorageContract)
-    simpleStorage.setProvider(this.state.web3.currentProvider)
+				let updatedState = this.state;
+				updatedState.ethereum.currentAccount = currentAccount;
+				this.setState(updatedState);
 
-    // Declaring this for later so we can chain functions on SimpleStorage.
-    var simpleStorageInstance
+				// instantiate contract once web3 provided.
+				return getContractInstance(this.state.ethereum.web3.currentProvider);
+			})
+			.then(contractInstance => {
 
-    // Get accounts.
-    this.state.web3.eth.getAccounts((error, accounts) => {
-      simpleStorage.deployed().then((instance) => {
-        simpleStorageInstance = instance
+				let updatedState = this.state;
+				updatedState.ethereum.contractInstance = contractInstance;
+				this.setState(updatedState);
+				console.log(this.state);
 
-        // Stores a given value, 5 by default.
-        return simpleStorageInstance.set(5, {from: accounts[0]})
-      }).then((result) => {
-        // Get the value from the contract to prove it worked.
-        return simpleStorageInstance.get.call(accounts[0])
-      }).then((result) => {
-        // Update state with the result.
-        return this.setState({ storageValue: result.c[0] })
-      })
-    })
-  }
+			})
+			.catch(err => {
+				console.log(err);
+			})
+	}
 
-  render() {
-    return (
-      <div className="App">
-        <nav className="navbar pure-menu pure-menu-horizontal">
-            <a href="#" className="pure-menu-heading pure-menu-link">Truffle Box</a>
-        </nav>
+	render() {
+		return (
+			<div>
+				<Header />
 
-        <main className="container">
-          <div className="pure-g">
-            <div className="pure-u-1-1">
-              <h1>Good to Go!</h1>
-              <p>Your Truffle Box is installed and ready.</p>
-              <h2>A good example</h2>
-              <p>If your contracts compiled and migrated successfully, below will show a stored value of 5 (by default).</p>
-              <p>Try changing the value stored on <strong>line 59</strong> of App.js.</p>
-              <p>The stored value is: {this.state.storageValue}</p>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
+				{/* TODO: refactor below in Main component */}
+				<Switch>
+					<Route exact path="/" component={Home} />
+
+					<Route path="/consumer_faq" component={ConsumerFAQ} />
+          <Route path="/business_faq" component={BusinessFAQ} />
+					<Route path="/consumer_sign_up" component={ConsumerSignUp} />
+					<Route path="/consumer_buy_items" component={ConsumerBuyItems} />
+					<Route path="/consumer_orders" component={ConsumerOrders} />
+					<Route path="/business_sign_up" component={BusinessSignUp} />
+					<Route path="/business_sell_items" component={BusinessSupplyItems} />
+					<Route path="/business_orders" component={BusinessOrders} />
+					<Route path="/administration" component={Administration} />
+
+					{/* default route: page not found */}
+					<Route component={_404} />
+				</Switch>
+
+				<Footer />
+
+			</div>
+		);
+	}
 }
-
-export default App
