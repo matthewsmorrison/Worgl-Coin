@@ -26,7 +26,17 @@ Once you have done this if you run 'npm run start' you will get a local deployme
 
 ## Running the tests
 
-In order to run the automated tests in this system you need to run 'truffle test'.
+In order to run the automated tests in this system you need to run:
+
+```
+$ truffle test
+```
+
+To perform all code coverage tests you need to run:
+
+```
+$ ./node_modules/.bin/solidity-coverage
+```
 
 ## Built With
 
@@ -37,6 +47,7 @@ In order to run the automated tests in this system you need to run 'truffle test
 * [Geth](https://github.com/ethereum/go-ethereum/wiki/geth) - CLI for running a full ethereum node implemented in Go
 * [Node.js](https://nodejs.org/en/) - An asynchronous event driven JavaScript runtime used to build scalable network applications
 * [MetaMask](https://metamask.io/) - A browser plug-in allowing you to run DApps
+* [Solidity-Coverage](https://github.com/sc-forks/solidity-coverage) - Solidity code coverage tool
 
 ## Authors
 
@@ -48,6 +59,6 @@ See also the list of [contributors](https://github.com/matthewsmorrison/Worgl-Co
 
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/matthewsmorrison/Worgl-Coin/blob/master/LICENSE) file for details
 
-## Acknowledgments
+<!-- ## Acknowledgments
 
-* [XX]
+* [XX] -->

@@ -402,4 +402,6 @@ contract('WorglCoin', function(accounts, app) {
 
   // Need to pass through an IPFS pointer to an image for an item
   // When sending an item how does the business know where to send it to?
+  // sudo npm install --save-dev solidity-coverage --python=python2.7
+  // ./node_modules/.bin/solidity-coverage
 });
