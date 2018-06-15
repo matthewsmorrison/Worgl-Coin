@@ -30,6 +30,12 @@ export class App extends React.Component {
 				web3: null,
 				contractInstance: null,
 				currentAccount: null
+			},
+			data: {
+				noConsumers: null,
+				noBusinesses: null,
+				noItems: null,
+				noOrders: null
 			}
 		};
 	}
@@ -64,6 +70,14 @@ export class App extends React.Component {
 
 				let updatedState = this.state;
 				updatedState.ethereum.contractInstance = contractInstance;
+
+				let noConsumers = contractInstance.noOfConsumers();
+				updatedState.data.noConsumers = noConsumers;
+
+				let noBusinesses = contractInstance.noOfBusinesses();
+				updatedState.data.noBusinesses = noBusinesses;
+
+
 				this.setState(updatedState);
 				console.log(this.state);
 
@@ -90,7 +104,9 @@ export class App extends React.Component {
 					<Route path="/business_sign_up" component={BusinessSignUp} />
 					<Route path="/business_sell_items" component={BusinessSupplyItems} />
 					<Route path="/business_orders" component={BusinessOrders} />
-					<Route path="/administration" component={Administration} />
+					<Route path="/administration">
+						<Administration admin_data={this.state.data}/>
+					</Route>
 
 					{/* default route: page not found */}
 					<Route component={_404} />

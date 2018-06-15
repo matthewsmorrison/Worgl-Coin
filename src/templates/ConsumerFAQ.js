@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 export const ConsumerFAQ = () => (
   <section id="main" className="container">

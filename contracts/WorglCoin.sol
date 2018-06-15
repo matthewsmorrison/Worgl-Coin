@@ -19,6 +19,7 @@ contract WorglCoin {
     uint tokenBalance;
     uint[] itemsSupplied;
     bool complaintAgainst;
+    uint noOfComplaints;
     uint[] allOrders;
   }
 
@@ -39,7 +40,7 @@ contract WorglCoin {
   }
 
   address public master;
-  uint public tokenValue;
+  uint public tokenValue; // measured in Wei
   uint public topUpLevel;
 
   mapping(address => Consumer) public consumerDetails;
@@ -57,6 +58,7 @@ contract WorglCoin {
   uint public noOfItems;
   uint public noOfOrders;
   mapping(bytes32 => bool) eligibleConsumers;
+  uint public balance;
 
   /***********************************/
   /************* MODIFIERS ***********/
@@ -92,7 +94,7 @@ contract WorglCoin {
 
   /*
   * @dev                          Constructor for WorglCoin
-  * @param  _tokenValue           the value of each coin measured in ether
+  * @param  _tokenValue           the value of each coin measured in Wei
   * @param  _topUpLevel           the number of tokens that each recipient will be topped up to
   */
   constructor(uint _tokenValue, uint _topUpLevel) public {
@@ -100,6 +102,7 @@ contract WorglCoin {
     noOfConsumers = 0;
     noOfBusinesses = 0;
     noOfItems = 0;
+    balance = 0;
     tokenValue = _tokenValue;
     topUpLevel = _topUpLevel;
   }
@@ -161,6 +164,7 @@ contract WorglCoin {
     newBusiness.businessAddress = _businessAddress;
     newBusiness.tokenBalance = 0;
     newBusiness.complaintAgainst = false;
+    newBusiness.noOfComplaints = 0;
     businessDetails[_businessAddress] = newBusiness;
 
     // Increment the number of businesses and trigger the event
@@ -207,7 +211,7 @@ contract WorglCoin {
   * @param    consumerAddress     the new value that the tokens can be exchanged for in Wei
   * @return   balances            the balance of the consumer
   */
-  function getTokenBalance(address consumerAddress) public view returns (uint balance) {
+  function getTokenBalance(address consumerAddress) public view returns (uint tokenBalance) {
     return consumerDetails[consumerAddress].tokenBalance;
   }
 
@@ -297,14 +301,28 @@ contract WorglCoin {
     require(allOrders[_orderID].customerAddress == msg.sender);
     require(allOrders[_orderID].sent);
     businessDetails[allItems[allOrders[_orderID].itemID].supplier].complaintAgainst = true;
+    businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints = add(businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints,1);
   }
 
   /*
   * @dev                          allows the owner of the contract to reset a business complaint
   * @param    _businessAddress    the address of the business
   */
-  function resetComplaint(address _businessAddress) public isOwner {
-    businessDetails[_businessAddress].complaintAgainst = false;
+  function resetComplaint(uint _orderID) public {
+    require(msg.sender == master || msg.sender == allOrders[_orderID].customerAddress);
+    if (msg.sender == master) {
+      businessDetails[allItems[allOrders[_orderID].itemID].supplier].complaintAgainst = false;
+      businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints = 0;
+    }
+
+    else {
+      businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints =
+        sub(businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints, 1);
+
+      if (businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints == 0) {
+        businessDetails[allItems[allOrders[_orderID].itemID].supplier].complaintAgainst = false;
+      }
+    }
   }
 
   /*
@@ -363,11 +381,17 @@ contract WorglCoin {
   * @dev                         allows you to return all item details
   * @param    _businessAddress   the addres of the business
   */
-  function getBusinessDetails(address _businessAddress) public view returns(uint, uint[], bool, uint[]) {
+  function getBusinessDetails(address _businessAddress) public view returns(uint, uint[], bool, uint, uint[]) {
     return  ( businessDetails[_businessAddress].tokenBalance,
               businessDetails[_businessAddress].itemsSupplied,
               businessDetails[_businessAddress].complaintAgainst,
+              businessDetails[_businessAddress].noOfComplaints,
               businessDetails[_businessAddress].allOrders);
+  }
+
+  // `fallback` function called when eth is sent to Payable contract
+    function topUpContract() public payable isOwner {
+      balance = add(balance, msg.value);
   }
 
 
@@ -389,16 +413,6 @@ contract WorglCoin {
     c = a * b;
     assert(c / a == b);
     return c;
-  }
-
-  /**
-  * @dev Integer division of two numbers, truncating the quotient.
-  */
-  function div(uint256 a, uint256 b) internal pure returns (uint256) {
-    // assert(b > 0); // Solidity automatically throws when dividing by 0
-    // uint256 c = a / b;
-    // assert(a == b * c + a % b); // There is no case in which this doesn't hold
-    return a / b;
   }
 
   /**
