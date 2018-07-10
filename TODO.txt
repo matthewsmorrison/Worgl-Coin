@@ -1,0 +1,5 @@
+- Need to sort out consumer and business identification
+- Need to tighten up security - need to pass images, user generated content etc.
+- Need to convert all Ether and Wei values into dollars so can see in real-time how much money it is
+- Understand why the reduced navigation panel does not update (consumer sign up, business sign up)
+- Show that a transaction has gone through successfully and tell the user (use Metamask event)?

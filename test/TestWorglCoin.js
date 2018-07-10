@@ -69,10 +69,11 @@ contract('WorglCoin', function(accounts, app) {
 
   it("Only the contract owner should be able to add a Business", function() {
     var app;
+    var name1 = "Tesco";
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
-      return expectThrow(app.addBusiness(business1, {from: randomAccount, value: 0}));
+      return expectThrow(app.addBusiness(business1, name1, {from: randomAccount, value: 0}));
     });
   });
 
@@ -100,6 +101,7 @@ contract('WorglCoin', function(accounts, app) {
       return expectThrow(app.consumerSignUp(enteredHash, {from: consumer1, value: 0}));
     });
   });
+
 
   it("A consumer that enters the right details should be able to sign up", function() {
     var app;
@@ -132,21 +134,58 @@ contract('WorglCoin', function(accounts, app) {
     });
   });
 
-  it("The contract owner should be able to successfully add a Business", function() {
+  it("A consumer should not be able to sign up twice.", function() {
     var app;
+    var enteredHash = "0x2ec30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
-      return app.addBusiness(business1, {from: owner, value: 0});
+      return expectThrow(app.consumerSignUp(enteredHash, {from: consumer1, value: 0}));
+    });
+  });
+
+  it("The contract owner should not be able to add a duplicate consumer hash.", function() {
+    var app;
+    var eligibleHash = "0x2ec30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
+
+    return WorglCoin.deployed().then(function(instance) {
+      app = instance;
+      return expectThrow(app.addConsumerHash(eligibleHash, {from: owner, value: 0}));
+    });
+  });
+
+
+  it("The contract owner should be able to successfully add a Business", function() {
+    var app;
+    var name1 = "Tesco";
+    var name2 = "Morrisons"
+
+    return WorglCoin.deployed().then(function(instance) {
+      app = instance;
+      return app.addBusiness(business1, name1, {from: owner, value: 0});
     }).then(function() {
       return app.noOfBusinesses();
     }).then(function(businesses) {
       assert.equal(businesses.valueOf(), 1, "The number of businesses has not been incremented");
-      return app.addBusiness(business2, {from: owner, value: 0});
+      return app.addBusiness(business2, name2, {from: owner, value: 0});
     }).then(function() {
       return app.noOfBusinesses();
     }).then(function(businesses) {
       assert.equal(businesses.valueOf(), 2, "The number of businesses has not been incremented");
+      return app.getAllBusinesses();
+    }).then(function(allBusinesses) {
+      assert.equal(allBusinesses[0].valueOf(), business1, "Business 1 has not been added to the list of businesses.");
+      assert.equal(allBusinesses[1].valueOf(), business2, "Business 2 has not been added to the list of businesses.");
+    });
+  });
+
+  it("A business should not be allowed to sign up twice.", function() {
+    var app;
+    var name1 = "Tesco";
+
+    return WorglCoin.deployed().then(function(instance) {
+      app = instance;
+      return expectThrow(app.addBusiness(business1, name1, {from: owner, value: 0}));
     });
   });
 
@@ -180,32 +219,34 @@ contract('WorglCoin', function(accounts, app) {
     }).then(function() {
       return app.getTokenBalance(consumer1);
     }).then(function(balance) {
-      assert.equal(balance.valueOf(), 2000, "The token balance has not been updated");
+      assert.equal(balance[1].valueOf(), 2000, "The token balance has not been updated");
     });
   });
 
   it("No other account should be able to add an item for sale.", function() {
     var app;
     var name = "Bread";
+    var picture = "Dummy";
     var price = 5;
     var quantity = 30;
 
     return WorglCoin.deployed().then(function(instance) {
       app=instance;
-      return expectThrow(app.sellItem(name, quantity, price, {from: randomAccount}));
+      return expectThrow(app.sellItem(name, picture, quantity, price, {from: randomAccount}));
     });
   });
 
   it("A business should be able to add an item for sale if they have no complaint against them.", function() {
     var app;
     var name = "Bread";
+    var picture = "Dummy";
     var price = 5;
     var quantity = 30;
     var itemID = 0;
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
-      return app.sellItem(name, quantity, price, {from: business1});
+      return app.sellItem(name, picture, quantity, price, {from: business1});
     }).then(function() {
       return app.noOfItems();
     }).then(function(items) {
@@ -213,9 +254,10 @@ contract('WorglCoin', function(accounts, app) {
       return app.getItemDetails(itemID);
     }).then(function(item) {
       assert.equal(item[0].valueOf(), "Bread", "The item name has not been registered properly.");
-      assert.equal(item[1].valueOf(), 30, "The item quantity has not been registered properly.");
-      assert.equal(item[2].valueOf(), 5, "The item price has not been registered properly.");
-      assert.equal(item[3].valueOf(), accounts[8], "The item supplier has not been registered properly.");
+      assert.equal(item[1].valueOf(), "Dummy", "The item picture not been registered properly.");
+      assert.equal(item[2].valueOf(), 30, "The item quantity has not been registered properly.");
+      assert.equal(item[3].valueOf(), 5, "The item price has not been registered properly.");
+      assert.equal(item[4].valueOf(), accounts[8], "The item supplier has not been registered properly.");
     });
   });
 
@@ -254,16 +296,35 @@ contract('WorglCoin', function(accounts, app) {
       assert.equal(order[3].valueOf(), false, "The order has been incorrectly marked as sent.");
       return app.getItemDetails(itemID);
     }).then(function(item) {
-      assert.equal(item[1].valueOf(), originalQuantity-quantity, "The item quantity has not been correctly decremented.");
+      assert.equal(item[2].valueOf(), originalQuantity-quantity, "The item quantity has not been correctly decremented.");
       return app.getTokenBalance(consumer1);
     }).then(function(consumerBalance) {
-      assert.equal(consumerBalance.valueOf(), originalBalance - (quantity*price), "The consumer token balance has not been correctly decremented.");
-      return app.getAllBusinessOrders(business1);
+      assert.equal(consumerBalance[1].valueOf(), originalBalance - (quantity*price), "The consumer token balance has not been correctly decremented.");
+      return app.getAllOrders(business1);
     }).then(function(allOrders) {
       assert.equal(allOrders[0].valueOf(), 0, "The order has not been added to the business structure.");
-      return app.getAllCustomerOrders(consumer1);
+      return app.getAllOrders(consumer1);
     }).then(function(allOrders) {
       assert.equal(allOrders[0].valueOf(), 0, "The order has not been added to the consumer structure.");
+    });
+  });
+
+  it("A consumer should not be able to buy an item if they do not have enough tokens.", function() {
+    var app;
+    var name = "Lamborghini";
+    var picture = "Dummy";
+    var price = 80000;
+    var quantity = 1;
+    var itemID = 1;
+
+    return WorglCoin.deployed().then(function(instance) {
+      app = instance;
+      return app.sellItem(name, picture, quantity, price, {from: business1});
+    }).then(function() {
+      return app.noOfItems();
+    }).then(function(items) {
+      assert.equal(items.valueOf(), 2, "The number of items has not been incremented.");
+      return expectThrow(app.buyItem(itemID, quantity, {from: consumer1}));
     });
   });
 
@@ -334,17 +395,28 @@ contract('WorglCoin', function(accounts, app) {
   it("A business with a complaint against it should not be able to put another item up for sale.", function() {
     var app;
     var name = "Bread";
+    var picture = "Dummy";
     var price = 5;
     var quantity = 30;
     var itemID = 0;
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
-      return expectThrow(app.sellItem(name, quantity, price, {from: business1}));
+      return expectThrow(app.sellItem(name, picture, quantity, price, {from: business1}));
     });
   });
 
-  it("A consumer should be able to withdraw their complaint about a business.", function() {
+  it("A random consumer should not be able to withdraw their complaint about another order.", function() {
+    var app;
+    var orderID = 0;
+
+    return WorglCoin.deployed().then(function(instance) {
+    app = instance;
+    return expectThrow(app.resetComplaint(orderID, {from: consumer2}));
+    });
+  });
+
+  it("The right consumer should be able to withdraw their complaint about a business.", function() {
     var app;
     var orderID = 0;
 
@@ -389,7 +461,7 @@ contract('WorglCoin', function(accounts, app) {
     }).then(function() {
       return app.getTokenBalance(consumer1);
     }).then(function(balance) {
-      assert.equal(balance.valueOf(), 2000, "The token balance has not been updated");
+      assert.equal(balance[1].valueOf(), 2000, "The token balance has not been updated");
     }).then(function() {
       return app.getBusinessDetails(business1);
     }).then(function(business) {
@@ -398,10 +470,4 @@ contract('WorglCoin', function(accounts, app) {
       assert.equal(newBusinessBalance, originalBusinessBalance + weiReceived, "The business did not receive the right payment.");
     });
   });
-
-
-  // Need to pass through an IPFS pointer to an image for an item
-  // When sending an item how does the business know where to send it to?
-  // sudo npm install --save-dev solidity-coverage --python=python2.7
-  // ./node_modules/.bin/solidity-coverage
 });

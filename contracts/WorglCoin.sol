@@ -21,6 +21,7 @@ contract WorglCoin {
     bool complaintAgainst;
     uint noOfComplaints;
     uint[] allOrders;
+    string name;
   }
 
   struct Order {
@@ -33,6 +34,7 @@ contract WorglCoin {
 
   struct Item {
     uint itemID;
+    string picture;
     string name;
     uint quantity;
     uint price; // in tokens
@@ -87,6 +89,14 @@ contract WorglCoin {
   event BusinessAdded(address businessAddress);
   event ItemAdded(uint itemID);
   event OrderAdded(uint orderID, address businessAddress);
+
+  event TokenDistribution();
+  event TopUp();
+
+  event ConsumerChange(address consumerAddress);
+  event BusinessChange(address businessAddress);
+  event ItemChange(uint itemID);
+  event OrderChange(uint orderID, address businessAddress);
 
   /***********************************/
   /********* PUBLIC FUNCTIONS ********/
@@ -153,8 +163,9 @@ contract WorglCoin {
   /*
   * @dev                        allows the owner of the contract to add a business
   * @param    _consumerAddress  the Ethereum address of the business to be added
+  * @param    _name             the name of the business to be added
   */
-  function addBusiness(address _businessAddress) public isOwner {
+  function addBusiness(address _businessAddress, string _name) public isOwner {
     // Check that the address is not already in the system
     require(!businessDetails[_businessAddress].isSet);
 
@@ -165,6 +176,7 @@ contract WorglCoin {
     newBusiness.tokenBalance = 0;
     newBusiness.complaintAgainst = false;
     newBusiness.noOfComplaints = 0;
+    newBusiness.name = _name;
     businessDetails[_businessAddress] = newBusiness;
 
     // Increment the number of businesses and trigger the event
@@ -179,6 +191,7 @@ contract WorglCoin {
   */
   function changeTokenBalance(uint newTopUpLevel) public isOwner {
     topUpLevel = newTopUpLevel;
+    emit TopUp();
   }
 
   /*
@@ -187,6 +200,7 @@ contract WorglCoin {
   */
   function changeTokenValue(uint newValue) public isOwner {
     tokenValue = newValue;
+    emit TopUp();
   }
 
   /*
@@ -204,17 +218,36 @@ contract WorglCoin {
       businessAddresses[j].transfer(mul(businessDetails[businessAddresses[j]].tokenBalance, tokenValue));
       businessDetails[businessAddresses[j]].tokenBalance = 0;
     }
+
+    emit TokenDistribution();
   }
 
   /*
   * @dev                          allows anyone to view the token balance of another consumer
-  * @param    consumerAddress     the new value that the tokens can be exchanged for in Wei
-  * @return   balances            the balance of the consumer
+  * @param    address     the new value that the tokens can be exchanged for in Wei
+  * @return   balances            the balance of the address
   */
-  function getTokenBalance(address consumerAddress) public view returns (uint tokenBalance) {
-    return consumerDetails[consumerAddress].tokenBalance;
-  }
+  function getTokenBalance(address holderAddress) public view returns (string, uint) {
+    if(consumerDetails[holderAddress].isSet){
+      return ('Consumer',
+      consumerDetails[holderAddress].tokenBalance);
+    }
 
+    else if(businessDetails[holderAddress].isSet){
+      return ('Business',
+      businessDetails[holderAddress].tokenBalance);
+    }
+
+    else if(holderAddress == master){
+      return ('Contract Owner',
+      0);
+    }
+
+    else {
+      return ('Not Signed Up',
+      0);
+    }
+  }
 
   /*
   * @dev                          allows a business to list an item for sale
@@ -222,7 +255,7 @@ contract WorglCoin {
   * @param   _quantity            the quantity of the item for sale
   * @param   _price               the number of tokens required to buy the item
   */
-  function sellItem(string _name, uint _quantity, uint _price) public isBusiness {
+  function sellItem(string _name, string _picture, uint _quantity, uint _price) public isBusiness {
     // Have to ensure the business has no complaints against it to list items
     require(!businessDetails[msg.sender].complaintAgainst);
 
@@ -231,12 +264,14 @@ contract WorglCoin {
     Item memory newItem;
     newItem.itemID = itemIDNumber;
     newItem.name = _name;
+    newItem.picture = _picture;
     newItem.quantity = _quantity;
     newItem.price = _price;
     newItem.supplier = msg.sender;
     allItems[itemIDNumber] = newItem;
 
     // Increment the number of items and trigger the event
+    businessDetails[msg.sender].itemsSupplied.push(itemIDNumber);
     itemIDs.push(itemIDNumber);
     noOfItems = add(noOfItems, 1);
     emit ItemAdded(itemIDNumber);
@@ -267,7 +302,6 @@ contract WorglCoin {
     noOfOrders = add(noOfOrders, 1);
     orderIDs.push(_orderID);
     businessDetails[allItems[_itemID].supplier].allOrders.push(_orderID);
-    emit OrderAdded(_orderID, allItems[_itemID].supplier);
 
     // Add to consumers orders
     consumerDetails[msg.sender].allOrders.push(_orderID);
@@ -275,8 +309,10 @@ contract WorglCoin {
     // Decrement the tokens from the consumers balance
     consumerDetails[msg.sender].tokenBalance = sub(consumerDetails[msg.sender].tokenBalance, totalCost);
 
-    // Decrement the quantity from the total quanity of items available
+    // Decrement the quantity from the total quantity of items available
     allItems[_itemID].quantity = sub(allItems[_itemID].quantity, _quantity);
+    emit OrderAdded(_orderID, allItems[_itemID].supplier);
+    emit ItemChange(_itemID);
   }
 
   /*
@@ -291,6 +327,7 @@ contract WorglCoin {
     // Transfer tokens to the business
     uint totalRevenue = allItems[allOrders[_orderID].itemID].price * allOrders[_orderID].quantityOrdered;
     businessDetails[msg.sender].tokenBalance = add(businessDetails[msg.sender].tokenBalance, totalRevenue);
+    emit OrderChange(_orderID, msg.sender);
   }
 
   /*
@@ -302,6 +339,7 @@ contract WorglCoin {
     require(allOrders[_orderID].sent);
     businessDetails[allItems[allOrders[_orderID].itemID].supplier].complaintAgainst = true;
     businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints = add(businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints,1);
+    emit OrderChange(_orderID, allItems[allOrders[_orderID].itemID].supplier);
   }
 
   /*
@@ -309,20 +347,14 @@ contract WorglCoin {
   * @param    _businessAddress    the address of the business
   */
   function resetComplaint(uint _orderID) public {
-    require(msg.sender == master || msg.sender == allOrders[_orderID].customerAddress);
-    if (msg.sender == master) {
+    require(msg.sender == allOrders[_orderID].customerAddress);
+    businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints =
+      sub(businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints, 1);
+
+    if (businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints == 0) {
       businessDetails[allItems[allOrders[_orderID].itemID].supplier].complaintAgainst = false;
-      businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints = 0;
     }
-
-    else {
-      businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints =
-        sub(businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints, 1);
-
-      if (businessDetails[allItems[allOrders[_orderID].itemID].supplier].noOfComplaints == 0) {
-        businessDetails[allItems[allOrders[_orderID].itemID].supplier].complaintAgainst = false;
-      }
-    }
+    emit OrderChange(_orderID, allItems[allOrders[_orderID].itemID].supplier);
   }
 
   /*
@@ -340,19 +372,28 @@ contract WorglCoin {
   }
 
   /*
-  * @dev                          allows you to return all order IDs for a consumer
-  * @param    _consumerAddress    the address of the consumer
+  * @dev                          allows you to return all order IDs for a consumer or business
+  * @param    _consumerAddress    the address of the consumer or business
   */
-  function getAllCustomerOrders(address _consumerAddress) public view returns(uint[]) {
-    return consumerDetails[_consumerAddress].allOrders;
+  function getAllOrders(address holderAddress) public view returns(uint[]) {
+    if(consumerDetails[holderAddress].isSet){
+      return consumerDetails[holderAddress].allOrders;
+    }
+
+    else if(businessDetails[holderAddress].isSet){
+      return businessDetails[holderAddress].allOrders;
+    }
+
+    else {
+      return;
+    }
   }
 
   /*
-  * @dev                          allows you to return all order IDs for a business
-  * @param    _consumerAddress    the address of the business
+  * @dev                          allows you to return all items
   */
-  function getAllBusinessOrders(address _businessAddress) public view returns(uint[]) {
-    return businessDetails[_businessAddress].allOrders;
+  function getAllItems() public view returns(uint[]) {
+    return itemIDs;
   }
 
   /*
@@ -370,8 +411,9 @@ contract WorglCoin {
   * @dev                         allows you to return all item details
   * @param    _itemID            the ID of the item
   */
-  function getItemDetails(uint _itemID) public view returns(string, uint, uint, address) {
+  function getItemDetails(uint _itemID) public view returns(string, string, uint, uint, address) {
     return  ( allItems[_itemID].name,
+              allItems[_itemID].picture,
               allItems[_itemID].quantity,
               allItems[_itemID].price,
               allItems[_itemID].supplier);
@@ -381,17 +423,19 @@ contract WorglCoin {
   * @dev                         allows you to return all item details
   * @param    _businessAddress   the addres of the business
   */
-  function getBusinessDetails(address _businessAddress) public view returns(uint, uint[], bool, uint, uint[]) {
+  function getBusinessDetails(address _businessAddress) public view returns(uint, uint[], bool, uint, uint[], string) {
     return  ( businessDetails[_businessAddress].tokenBalance,
               businessDetails[_businessAddress].itemsSupplied,
               businessDetails[_businessAddress].complaintAgainst,
               businessDetails[_businessAddress].noOfComplaints,
-              businessDetails[_businessAddress].allOrders);
+              businessDetails[_businessAddress].allOrders,
+              businessDetails[_businessAddress].name);
   }
 
   // `fallback` function called when eth is sent to Payable contract
     function topUpContract() public payable isOwner {
       balance = add(balance, msg.value);
+      emit TopUp();
   }
 
 

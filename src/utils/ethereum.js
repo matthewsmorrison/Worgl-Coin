@@ -51,3 +51,116 @@ export async function getAccounts(web3) {
         resolve(web3.eth.accounts);
     });
 };
+
+export async function getAdminData(contractInstance) {
+  console.log('Getting admin data');
+
+  // Get all the administration data
+  let noConsumers = await contractInstance.noOfConsumers().valueOf();
+  let noBusinesses = await contractInstance.noOfBusinesses().valueOf();
+  let noItems = await contractInstance.noOfItems().valueOf();
+  let noOrders = await contractInstance.noOfOrders().valueOf();
+
+  return { noConsumers: noConsumers, noBusinesses: noBusinesses, noItems: noItems, noOrders: noOrders };
+
+}
+
+export async function getAllItems(contractInstance) {
+  console.log('Getting all items.');
+  let items = [];
+  let itemIDs = await contractInstance.getAllItems();
+
+  for (let i = 0; i < itemIDs.length; i++) {
+    let item = await contractInstance.allItems(itemIDs[i]);
+    items.push(item);
+  }
+
+  return items;
+}
+
+export async function getAccountDetails(contractInstance, currentAccount) {
+  console.log('Getting account details');
+
+  // Get all the consumer details
+  let accountDetails = await contractInstance.getTokenBalance(currentAccount);
+  let contractBalance = await contractInstance.balance().valueOf();
+  let tokenValue = await contractInstance.tokenValue().valueOf();
+
+  return { accountType: accountDetails[0],
+    tokenBalance: accountDetails[1].toNumber(),
+    balance: contractBalance.toNumber()/1000000000000000000,
+    value: tokenValue.toNumber()/1000000000000000000
+  };
+}
+
+export async function getBusinessDetails(contractInstance, businessAddress) {
+  console.log('Getting business details');
+
+  // Get all business details
+  let businessDetails = await contractInstance.getBusinessDetails(businessAddress);
+
+  return {
+    tokenBalance: businessDetails[0].toNumber(),
+    itemsSupplied: businessDetails[1],
+    complaintAgainst: businessDetails[2],
+    noOfComplaints: businessDetails[3].toNumber(),
+    allOrders: businessDetails[4],
+    name: businessDetails[5]
+  };
+}
+
+export async function getOrders(contractInstance, targetAddress) {
+  let historicalOrders = [];
+  let currentOrders = [];
+
+  if (!contractInstance) {
+    console.log('Have no valid contract instance yet');
+    return {
+      historicalOrders: historicalOrders,
+      currentOrders: currentOrders
+    };
+  }
+
+  // Get all Orders
+
+  let orderIDs = await contractInstance.getAllOrders(targetAddress);
+
+  for (let i = 0; i < orderIDs.length; i++) {
+    let order = await contractInstance.allOrders(orderIDs[i]);
+
+    if(order[4] === true) {
+      historicalOrders.push(order);
+    }
+
+    else {
+      currentOrders.push(order);
+    }
+  }
+
+  return {
+    historicalOrders: historicalOrders,
+    currentOrders: currentOrders
+  };
+}
+
+export async function getItemInformation(contractInstance, itemID) {
+  let itemDetails = [];
+
+  if (!contractInstance) {
+    console.log('Have no valid contract instance yet');
+    return {
+      item: itemDetails
+    };
+  }
+
+  itemDetails = await contractInstance.getItemDetails(itemID);
+
+  return {
+    name: itemDetails[0],
+    picture: itemDetails[1],
+    quantity: itemDetails[2].toNumber(),
+    price: itemDetails[3].toNumber(),
+    supplier: itemDetails[4]
+  }
+
+}

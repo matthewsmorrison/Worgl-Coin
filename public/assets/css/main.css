@@ -36,6 +36,7 @@
 	table {
 		border-collapse: collapse;
 		border-spacing: 0;
+		align-items: center;
 	}
 
 	body {
@@ -3117,9 +3118,10 @@
 /* Footer */
 
 	#footer {
-		background: #f0f0f0;
-		padding: 4em 0 6em 0;
+		background: #e89980;
+		padding: 2em 0 2em 0;
 		text-align: center;
+		color: white;
 	}
 
 		#footer .icons a {
@@ -3141,6 +3143,7 @@
 			margin: 2em 0 0 0;
 			padding: 0;
 			text-align: center;
+			color: white;
 		}
 
 			#footer .copyright a {

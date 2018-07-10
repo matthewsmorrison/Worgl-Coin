@@ -1,7 +1,181 @@
+// Need to split this up into smaller components
+// https://reactjs.org/docs/components-and-props.html
+
+// How do I get the page to re-render when there is a change in props?
+// How do I get a 'success' message if a business has been added successfully?
+
+
 import React from 'react';
-const web3 = window.web3;
 
 export class Administration extends React.Component {
+  constructor(props) {
+    super(props);
+    this.addBusiness = this.addBusiness.bind(this);
+    this.addConsumerHash = this.addConsumerHash.bind(this);
+    this.transferFunds = this.transferFunds.bind(this);
+    this.changeTokenBalance = this.changeTokenBalance.bind(this);
+    this.changeTokenValue = this.changeTokenValue.bind(this);
+    this.distributeFunds = this.distributeFunds.bind(this);
+    this.changeOwner = this.changeOwner.bind(this);
+
+   this.state = {
+     businessAddress: 0,
+     businessName: null,
+     consumerHash: null,
+     transferFunds: 0,
+     tokenValue: null,
+     tokenNumber: null,
+     newOwner: null
+   }
+ };
+
+ async addBusiness(e) {
+   e.preventDefault();
+   console.log('About to add a new business');
+   let ethereum = this.props.ethereum;
+   let businessAddress = this.state.businessAddress;
+   let businessName = this.state.businessName;
+
+   console.log(ethereum);
+   let response = ethereum.contractInstance.addBusiness(businessAddress, businessName,
+    {
+      from: ethereum.currentAccount,
+      value: ethereum.web3.toWei(0, "ether")
+    });
+    console.log("Add new business: " + response);
+  }
+
+  async addConsumerHash(e) {
+    e.preventDefault();
+    console.log('About to add a new consumer hash');
+    let ethereum = this.props.ethereum;
+    let consumerHash = this.state.consumerHash;
+
+    console.log(ethereum);
+    let response = ethereum.contractInstance.addConsumerHash(consumerHash,
+     {
+       from: ethereum.currentAccount,
+       value: ethereum.web3.toWei(0, "ether")
+     });
+     console.log("Add new consumer hash: " + response);
+  }
+
+  async transferFunds(e) {
+    e.preventDefault();
+    console.log('About to transfer funds to contract');
+    let ethereum = this.props.ethereum;
+    let funds = this.state.transferFunds;
+
+    console.log(ethereum);
+    let response = ethereum.contractInstance.topUpContract(
+      {
+        from: ethereum.currentAccount,
+        value: ethereum.web3.toWei(funds, "ether")
+      });
+    console.log("Adding funds to the contract: " + response);
+  }
+
+  async changeTokenBalance(e) {
+    e.preventDefault();
+    console.log('About to change number of tokens distributed');
+    let ethereum = this.props.ethereum;
+    let newNumber = this.state.tokenNumber;
+
+    console.log(ethereum);
+    let response = ethereum.contractInstance.changeTokenBalance(newNumber,
+      {
+        from: ethereum.currentAccount,
+        value: ethereum.web3.toWei(0, "ether")
+      });
+    console.log("Changing the top up level " + response);
+  }
+
+  async changeTokenValue(e) {
+    e.preventDefault();
+    console.log('About to change token value');
+    let ethereum = this.props.ethereum;
+    let newValue = this.state.tokenValue;
+
+    console.log(ethereum);
+    let response = ethereum.contractInstance.changeTokenValue(newValue,
+      {
+        from: ethereum.currentAccount,
+        value: ethereum.web3.toWei(0, "ether")
+      });
+    console.log("Changing the value of each token " + response);
+  }
+
+  async distributeFunds(e) {
+    e.preventDefault();
+    console.log('About to distribute funds');
+    let ethereum = this.props.ethereum;
+
+    console.log(ethereum);
+    let response = ethereum.contractInstance.resetTokenBalance(
+      {
+        from: ethereum.currentAccount,
+        value: ethereum.web3.toWei(0, "ether")
+      });
+    console.log("Resetting the token balance " + response);
+  }
+
+  async changeOwner(e) {
+    e.preventDefault();
+    console.log('About to change owner');
+    let ethereum = this.props.ethereum;
+    let newOwner = this.state.newOwner;
+
+    console.log(ethereum);
+    let response = ethereum.contractInstance.changeOwner(newOwner,
+      {
+        from: ethereum.currentAccount,
+        value: ethereum.web3.toWei(0, "ether")
+      });
+    console.log("Changing the contract owner " + response);
+  }
+
+  updateState(evt) {
+    let target = evt.target;
+    let id = target.id;
+    let newState = this.state;
+
+    switch (id) {
+      case 'businessAddress':
+        newState.businessAddress = target.value;
+        break;
+
+      case 'businessName':
+        newState.businessName = target.value;
+        break;
+
+      case 'consumerHash':
+        newState.consumerHash = target.value;
+        break;
+
+      case 'funds':
+        newState.transferFunds = target.value;
+        break;
+
+      case 'tokenNumber':
+        newState.tokenNumber = target.value;
+        break;
+
+      case 'tokenValue':
+        newState.tokenValue = target.value * 1000000000000000000;
+        break;
+
+      case 'newOwner':
+        newState.newOwner = target.value;
+        break;
+
+      default:
+        console.log("Not updating any state.");
+
+    }
+
+    this.setState(newState);
+  }
+
   render() {
       return (
         <section id="main" className="container">
@@ -10,51 +184,89 @@ export class Administration extends React.Component {
         		<p>The contract owner can interact with the contract here.</p>
         	</header>
 
-          {
-            !web3
-            ? (
-              <div className="box">
-              <p>You need to have metamask installed to interact with the application. You can install Metamask from this address: <a href="https://metamask.io" target="_blank">metamask.io</a>. You then need to click
-                “Add to Chrome” to install MetaMask as Google Chrome extension. You then need to click “Add Extension” to confirm and MetaMask will be added.
-              You can see that MetaMask is added by the little fox logo that shows up on the top right corner.</p>
-              </div>
-
-            )
-          : (
-            [<div key={1} className="box">
+            <div className="box">
             <h4><strong>Application Statistics</strong></h4>
             <hr/>
-            <div key={2} className="table-wrapper">
+            <div className="table-wrapper">
             <table>
             <tbody>
               <tr>
                 <td>Number of Consumers Registered</td>
-                <td>{this.props.noConsumers}</td>
+                <td>{this.props.admin_data.noConsumers}</td>
               </tr>
               <tr>
                 <td>Number of Businesses Registered</td>
-                <td></td>
+                <td>{this.props.admin_data.noBusinesses}</td>
               </tr>
               <tr>
                 <td>Number of Items Listed</td>
-                <td></td>
+                <td>{this.props.admin_data.noItems}</td>
               </tr>
               <tr>
                 <td>Number of Orders Made</td>
-                <td></td>
+                <td>{this.props.admin_data.noOrders}</td>
               </tr>
             </tbody>
             </table>
-            </div></div>,
-            <div key={3} className="box">
+            </div>
+            </div>
+
+            <div className="box">
             <h4><strong>Contract Interaction</strong></h4>
             <hr/>
-            </div>]
-          )
-        }
+            <div className="table-wrapper">
+            <table>
+            <tbody>
+              <tr>
+                <td style={{textAlign:"left", verticalAlign:"middle"}}>Add a new business</td>
+                <td style={{textAlign:"left", verticalAlign:"middle"}}><input maxLength={42} type="text" id="businessAddress" placeholder="Ethereum Address (e.g. 0x...)" onChange={evt => this.updateState(evt)}/></td>
+                <td><input type="text" id="businessName" placeholder="Name of Business (e.g. Ben's)" onChange={evt => this.updateState(evt)}/></td>
+                <td style={{textAlign:"center"}}><a onClick={this.addBusiness} className="button special fit small">Add Business</a></td>
+              </tr>
 
+              <tr>
+                <td>Add a new consumer hash</td>
+                <td colSpan="2"><input style={{textAlign:"left"}} type="text" id="consumerHash" placeholder="Hash of data" onChange={evt => this.updateState(evt)}/></td>
+                <td style={{textAlign:"center"}}><a onClick={this.addConsumerHash} className="button special fit small">Add Consumer Hash</a></td>
+              </tr>
+
+              <tr>
+                <td>Add funds to the contract (in ether)</td>
+                <td colSpan="2"><input style={{textAlign:"center"}} type="number" id="funds" onChange={evt => this.updateState(evt)}/></td>
+                <td style={{textAlign:"center"}}><a onClick={this.transferFunds} className="button special fit small">Transfer Funds</a></td>
+              </tr>
+
+              <tr>
+                <td>Change number of tokens distributed</td>
+                <td colSpan="2"><input style={{textAlign:"center"}} type="number" id="tokenNumber" placeholder="# of tokens" onChange={evt => this.updateState(evt)}/></td>
+                <td style={{textAlign:"center"}}><a onClick={this.changeTokenBalance} className="button special fit small">Change Token Top-Up</a></td>
+              </tr>
+
+              <tr>
+                <td>Change value of each token</td>
+                <td colSpan="2"><input style={{textAlign:"center"}} type="number" id="tokenValue" placeholder="Ether Per Token" onChange={evt => this.updateState(evt)}/></td>
+                <td style={{textAlign:"center"}}><a onClick={this.changeTokenValue} className="button special fit small">Change Token Value</a></td>
+              </tr>
+
+              <tr>
+                <td>Reset the token balance</td>
+                <td></td>
+                <td></td>
+                <td style={{textAlign:"center"}}><a onClick={this.distributeFunds} className="button special fit small">Distribute Funds</a></td>
+              </tr>
+
+              <tr>
+                <td>Change the contract owner</td>
+                <td colSpan="2"><input maxLength={42} type="text" id="newOwner" placeholder="Ethereum Address (e.g. 0x...)" onChange={evt => this.updateState(evt)}/></td>
+                <td style={{textAlign:"center"}}><a onClick={this.changeOwner} className="button special fit small">Change Owner</a></td>
+              </tr>
+
+
+
+            </tbody>
+            </table>
+            </div></div>
         </section>
-
-      );
+    );
   }
 }

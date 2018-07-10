@@ -4,7 +4,9 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 
-(function($) {
+(function ($) {
+
+	"use strict"
 
 	skel.breakpoints({
 		wide: '(max-width: 1680px)',
@@ -15,7 +17,7 @@
 		mobilep: '(max-width: 480px)'
 	});
 
-	$(function() {
+	$(function () {
 
 		var	$window = $(window),
 			$body = $('body'),
@@ -26,7 +28,7 @@
 			$('form').placeholder();
 
 		// Prioritize "important" elements on narrower.
-			skel.on('+narrower -narrower', function() {
+			skel.on('+narrower -narrower', function () {
 				$.prioritize(
 					'.important\\28 narrower\\29',
 					skel.breakpoint('narrower').active
@@ -63,7 +65,7 @@
 						hideOnSwipe: true,
 						resetScroll: true,
 						resetForms: true,
-						side: 'left',
+						side: 'right',
 						target: $body,
 						visibleClass: 'navPanel-visible'
 					});
@@ -81,14 +83,14 @@
 			&&	$header.hasClass('alt')
 			&&	$banner.length > 0) {
 
-				$window.on('load', function() {
+				$window.on('load', function () {
 
 					$banner.scrollwatch({
 						delay:		0,
 						range:		0.5,
 						anchor:		'top',
-						on:			function() { $header.addClass('alt reveal'); },
-						off:		function() { $header.removeClass('alt'); }
+						on:			function () { $header.addClass('alt reveal'); },
+						off:		function () { $header.removeClass('alt'); }
 					});
 
 				});

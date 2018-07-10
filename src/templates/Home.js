@@ -83,24 +83,6 @@ export const Home = () => (
 
   </section>
 
-    {/* CTA */}
-    <section id="cta">
-
-      <h2>Sign up to our mailing list</h2>
-      <p>We will keep you up-to-date with all developments in the project.</p>
-
-      <form>
-        <div className="row uniform 50%">
-          <div className="8u 12u(mobilep)">
-            <input type="email" name="email" id="email" placeholder="Email Address" />
-          </div>
-          <div className="4u 12u(mobilep)">
-            <input type="submit" value="Sign Up" className="fit" />
-          </div>
-        </div>
-      </form>
-
-    </section>
   </div>
 
 );
