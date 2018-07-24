@@ -1,5 +1,7 @@
 pragma solidity ^0.4.23;
 
+import "./Verifier.sol";
+
 contract WorglCoin {
 
   /***********************************/
@@ -215,8 +217,8 @@ contract WorglCoin {
 
     // Pay out all funds to business
     for (uint j = 0; j<noOfBusinesses; j++) {
-      businessAddresses[j].transfer(mul(businessDetails[businessAddresses[j]].tokenBalance, tokenValue));
       businessDetails[businessAddresses[j]].tokenBalance = 0;
+      businessAddresses[j].transfer(mul(businessDetails[businessAddresses[j]].tokenBalance, tokenValue));
     }
 
     emit TokenDistribution();
