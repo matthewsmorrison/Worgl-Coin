@@ -1,11 +1,5 @@
-// Need to split this up into smaller components
-// https://reactjs.org/docs/components-and-props.html
-
-// How do I get the page to re-render when there is a change in props?
-// How do I get a 'success' message if a business has been added successfully?
-
-
 import React from 'react';
+import { convertAndPad, sha256compression, binaryToHex, hexToBinary } from '../../utils/hash';
 
 export class Administration extends React.Component {
   constructor(props) {
@@ -21,6 +15,10 @@ export class Administration extends React.Component {
    this.state = {
      businessAddress: 0,
      businessName: null,
+     consumerName: ' ',
+     consumerNationalInsurance: ' ',
+     consumerDateOfBirth: ' ',
+     consumerSecret: ' ',
      consumerHash: null,
      transferFunds: 0,
      tokenValue: null,
@@ -148,10 +146,6 @@ export class Administration extends React.Component {
         newState.businessName = target.value;
         break;
 
-      case 'consumerHash':
-        newState.consumerHash = target.value;
-        break;
-
       case 'funds':
         newState.transferFunds = target.value;
         break;
@@ -168,10 +162,34 @@ export class Administration extends React.Component {
         newState.newOwner = target.value;
         break;
 
+      case 'name':
+        newState.consumerName= target.value;
+        break;
+
+      case 'nationalInsurance':
+        newState.consumerNationalInsurance= target.value;
+        break;
+
+      case 'dateOfBirth':
+        newState.consumerDateOfBirth= target.value;
+        break;
+
+      case 'secret':
+        newState.consumerSecret= target.value;
+        break;
+
       default:
         console.log("Not updating any state.");
 
     }
+
+    var combinedString = newState.consumerName + newState.consumerNationalInsurance + newState.consumerDateOfBirth + newState.consumerSecret;
+    combinedString = combinedString.replace(/\s/g, '');
+
+    var paddedBits = convertAndPad(combinedString);
+    var paddedHex = binaryToHex(paddedBits).toLowerCase();
+    var sha256hash = sha256compression(paddedHex);
+    newState.consumerHash = "0x" + sha256hash;
 
     this.setState(newState);
   }
@@ -225,12 +243,6 @@ export class Administration extends React.Component {
               </tr>
 
               <tr>
-                <td>Add a new consumer hash</td>
-                <td colSpan="2"><input style={{textAlign:"left"}} type="text" id="consumerHash" placeholder="Hash of data" onChange={evt => this.updateState(evt)}/></td>
-                <td style={{textAlign:"center"}}><a onClick={this.addConsumerHash} className="button special fit small">Add Consumer Hash</a></td>
-              </tr>
-
-              <tr>
                 <td>Add funds to the contract (in ether)</td>
                 <td colSpan="2"><input style={{textAlign:"center"}} type="number" id="funds" onChange={evt => this.updateState(evt)}/></td>
                 <td style={{textAlign:"center"}}><a onClick={this.transferFunds} className="button special fit small">Transfer Funds</a></td>
@@ -265,7 +277,50 @@ export class Administration extends React.Component {
 
             </tbody>
             </table>
-            </div></div>
+            </div>
+            </div>
+
+            <div className="box">
+            <h4><strong>Add New Consumer Hash</strong></h4>
+            <hr/>
+            <div className="table-wrapper">
+            <table>
+            <tbody>
+
+            <tr>
+              <td>Full Name (With Middle Names)</td>
+              <td><input type="text" id="name" onChange={evt => this.updateState(evt)}/></td>
+            </tr>
+
+            <tr>
+              <td>National Insurance Number</td>
+              <td><input type="text" id="nationalInsurance" onChange={evt => this.updateState(evt)}/></td>
+            </tr>
+
+            <tr>
+              <td>Date of Birth</td>
+              <td><input type="text" id="dateOfBirth" placeholder="In the format 'ddmmyyyy'" onChange={evt => this.updateState(evt)}/></td>
+            </tr>
+
+            <tr>
+              <td>The Secret Phrase Sent To Their Address</td>
+              <td><input type="text" id="secret" onChange={evt => this.updateState(evt)}/></td>
+            </tr>
+
+            <tr>
+              <td>The Hash To Be Submitted</td>
+              <td>{this.state.consumerHash}</td>
+            </tr>
+
+            <tr>
+              <td></td>
+              <td style={{textAlign:"center"}}><a onClick={this.addConsumerHash} className="button special fit small">Add Consumer Hash</a></td>
+            </tr>
+
+            </tbody>
+            </table>
+            </div>
+            </div>
         </section>
     );
   }
