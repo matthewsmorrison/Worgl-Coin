@@ -6,23 +6,23 @@ contract('Verifier', function(accounts, app) {
 
   it("A zk-SNARK proof should be verified as true", function() {
 
-    var A = ["0x11499748357cf7ea81461714a8090d9d78202c04012eb192891598b6fbd1e339", "0xdea034c721267348ca09b1fef69b0b4e4694423eca647607e3c013f992834f4"];
-    var A_p = ["0x63037862787f08633473006f597e5f2725c9c8babcd0f582bdd71d31a9c49f4", "0x3043ee81be5512b86ddc64dd837bec607344cfcf1c069cc7432571fdbb6b974f"];
-    var B = [["0x2b8d140f89f1c5beb329de11c7a88f2f65db05f1df00396d56489ba685c1a2bb", "0x241f9142aaa5f0427ccca4145cc756dfd71f5241fcb97cf27f23fbfcd16a380a"], ["0xb97ff47cbce308506a79dc230104fbd8e1fde47e46bcc83803203c4c8026296", "0x1947636f6ea592092cc0c6069c61de5a5077729914523e96b1aed42ac32dc369"]];
-    var B_p = ["0x2d995f17bb1b107a5ef4f1a926604461cca1ff41a77b1055e49af9e8f04fbd4a", "0x145f6363cf430711adf748032a8b2cfb312920a9613a252731803dda894adcbb"];
-    var C = ["0xbd969b74b84aa6b97a9e1d1ece9610ee347b786708cb5a6ed23ee717cf9d073", "0x1d466192b252a67a9cea6f0621d195b13cb24a56d5b1df34e83815734e0bac98"];
-    var C_p = ["0x194b48641d28fcb7afd784b4dbaecb37ce14b19411e457f6bab545d6d57fb101", "0x1df1edbb00cfb431821c030abbec54b5654918635917583265d64c256da0cca8"];
-    var H = ["0xca93e0ef4813ef243ae217ef323c5f16a1721b058baecef2163710c88630c71", "0x20362c9ebfbd7764a36a79b3c0c37fecdceeb5ceb1f434f36a5467e189139445"];
-    var K = ["0x240f66de2d1d3bc594ea5be1b7fb2a971f3b07ef332494f059c798339025e2b3", "0x1fd8fd322bcddd5d18629f7936313cf7ce2ffaf9f6110b025e827b23316c76"];
+    var A = ["0x2809c1805188ed0b6ece6051d2f30814967da9e86d60bae46eae290208f3c051", "0x2995b14e2279d155349d52f6246853b8968b8e707fa04a63afb24d74cfdfa9a2"];
+    var A_p = ["0x1e72291c946d2a53d97ac49fe25bb10f0fd95a8b3555a8eefe6057015aa50ca7", "0x1395154175ef72f78da9276db58105de1cce0590121fe12200edfd6514bd9ba1"];
+    var B = [["0x260dd5608c20e3c8547acd2c7fcea12f04d93afe1e0825c9a146213a9ada7b2f", "0xfdf95ec3383db4603a3a1c9983c5b65522a83af8251fd829092bc66de4934a2"], ["0x2f702ee399501e0d35adba243e492f19f4a63b51c7142e4ee27d6b4725aa2448", "0x2a8c0cfac6e2fb9dedf2ddcbb8062d6482c95b1a2a4c762465ac2a0c5def4916"]];
+    var B_p = ["0x24fcdb2e8d39796c5dfa0670eb10f9ba820d684dc9fab84874584a0a430787ef", "0x17ed46e84c7a5c84a6c131d0f4d846987ff605d2a6bbe4178a114d4688c20401"];
+    var C = ["0x1debc840bab77073c3cb869de3218fe68e2949c7f204f4b1302d3a7c4ca779b2", "0xcb7cd8c71a1aa5038dfe56a22d12b61e1af995d46b46f908d32f0c3362e2687"];
+    var C_p = ["0x109c3f22dfa36c84335132cf3eadef4403a6e7b97841ad34c88396561048e362", "0x18cfe38396fdb517ecb19261c4245cc45834cd2f2da2c377156b30b5d0bbd89d"];
+    var H = ["0x18a651221f964ed0c205c4e8aa505038e5ab134ef00b537317ba4a46542415f", "0xf037b5031c8f35d4bf84909eee590b614018e430573dcd6de1bc0524ca9244c"];
+    var K = ["0x72906671daa7f3c76ab0bf9a584f85a40e29bdd841f91ea6ae1d194e8015497", "0x1a4d79a000bddd9f41d30f05058b379a1e297dc00bdcd81c24783d554cf719cc"];
 
     // This is your input and output
-    var I = [0, 1, 0, 1, 0, 1];
+    // First 32 integers are the first 32 bits of the hash
+    // The 33 bit is 1 for the return value
+    var I = [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1];
 
     return Verifier.deployed().then(function(instance) {
       app = instance;
-      return app.verifyTx.call(A, A_p, B, B_p, C, C_p, H, K, I);
-    }).then(function(returnValue) {
-      assert.equal(returnValue, true, "The zk-SNARK proof was not verified.");
+      return app.verifyTx(A, A_p, B, B_p, C, C_p, H, K, I);
     });
   });
 });
