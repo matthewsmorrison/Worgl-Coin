@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertAndPad, sha256compression, binaryToHex, hexToBinary } from '../../utils/hash';
+import { convertAndPad, sha256compression, binaryToHex } from '../../utils/hash';
 
 export class Administration extends React.Component {
   constructor(props) {
@@ -185,6 +185,7 @@ export class Administration extends React.Component {
 
     var combinedString = newState.consumerName + newState.consumerNationalInsurance + newState.consumerDateOfBirth + newState.consumerSecret;
     combinedString = combinedString.replace(/\s/g, '');
+    combinedString = combinedString.toLowerCase();
 
     var paddedBits = convertAndPad(combinedString);
     var paddedHex = binaryToHex(paddedBits).toLowerCase();

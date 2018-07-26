@@ -11,7 +11,6 @@ export const Home = () => (
     <p>An Ether-Backed Universal Basic Income</p>
     <ul className="actions">
       <li><Link to="/consumer_sign_up" className="button special">Consumer Sign Up</Link></li>
-      <li><Link to="/business_sign_up" className="button special">Business Sign Up</Link></li>
     </ul>
   </section>
 
@@ -24,7 +23,7 @@ export const Home = () => (
           <span className="fas fa-coins fa-5x"></span>
           <h3><br />A Universal Basic Income Coin</h3>
           <p>WörglCoin is designed to give citizens a basic standard of living through the distribution of
-          tokens that can be spent on everyday items. Each month your balance will be topped up to 1000 WörglCoin.</p>
+          tokens that can be spent on everyday items. Each month your balance will be topped up to a set number of WörglCoin.</p>
         </section>
 
         <section>
@@ -58,7 +57,7 @@ export const Home = () => (
         <section className="box special">
           <span className="image featured"><img src="images/shopping.jpg" alt="" /></span>
           <h3>For Consumers</h3>
-          <p>Any individual with a valid National Insurance ID can sign-up for WörglCoin.
+          <p>Any individual with valid UK government credentials can sign-up for WörglCoin.
           Just visit the sign-up page below to start receiving your coins.</p>
           <ul className="actions">
             <li><Link to="/consumer_sign_up" className="button alt">Consumer Sign Up</Link></li>
@@ -71,10 +70,9 @@ export const Home = () => (
         <section className="box special">
           <span className="image featured"><img src="images/city.jpg" alt="" /></span>
           <h3>For Businesses</h3>
-          <p>Any business in the UK can start to receive UBI coins and offset these against their tax bill.
-            Just visit the sign-up page below to start receiving WörglCoin.</p>
+          <p>Any business in the UK can start to receive UBI coins.<br/><br/>On your next tax return be sure to note your Ethereum address and you will be added to our system.</p>
           <ul className="actions">
-            <li><Link to="/business_sign_up" className="button alt">Business Sign Up</Link></li>
+            <li></li>
           </ul>
         </section>
 

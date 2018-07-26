@@ -1,7 +1,33 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
+import { getEthPrice } from '../utils/pricefeed.js';
 
 export class Header extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      ethPrice: null,
+      tokenValue: null,
+      tokenBalanceValue: null,
+      contractBalanceValue: null
+    }
+ };
+
+  componentWillReceiveProps() {
+    getEthPrice()
+      .then(price => {
+        let updatedState = this.state;
+        updatedState.ethPrice = price;
+        updatedState.tokenValue = (this.props.details.tokenValue * price).toFixed(2);
+        updatedState.tokenBalanceValue = (this.props.details.tokenBalance * price);
+        updatedState.contractBalanceValue = (this.props.details.contractBalance * price).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        console.log(price);
+        this.setState(updatedState);
+  })
+};
+
+
     render() {
       var pStyle = {
       color: 'black',
@@ -11,7 +37,6 @@ export class Header extends Component {
 
     var currentAccount = this.props.details.accountType;
     console.log(currentAccount);
-
     if (currentAccount === 'Consumer') {
       this.forceUpdate()
       return (
@@ -36,8 +61,8 @@ export class Header extends Component {
           currentAccount
           ? (
             <p style={pStyle}>Signed in on account: {currentAccount} ({this.props.details.accountType} Account)<br/>
-            Your token balance:  {this.props.details.tokenBalance} UBI Tokens<br/>
-            Contract Balance: {this.props.details.contractBalance} Ether, Token Value: {this.props.details.tokenValue} Ether</p>
+            Your token balance:  {this.props.details.tokenBalance} UBI Tokens (US${this.state.tokenBalanceValue})<br/>
+            Contract Balance: {this.props.details.contractBalance} Ether (US${this.state.contractBalanceValue}), Token Value: {this.props.details.tokenValue} Ether (US${this.state.tokenValue})</p>
           )
           : (
 
@@ -73,7 +98,7 @@ export class Header extends Component {
           ? (
             <p style={pStyle}>Signed in on account: {currentAccount} ({this.props.details.accountType} Account)<br/>
             Your token balance:  {this.props.details.tokenBalance} UBI Tokens<br/>
-            Contract Balance: {this.props.details.contractBalance} Ether, Token Value: {this.props.details.tokenValue} Ether</p>
+            Contract Balance: {this.props.details.contractBalance} Ether (US${this.state.contractBalanceValue}), Token Value: {this.props.details.tokenValue} Ether (US${this.state.tokenValue})</p>
           )
           : (
 
@@ -107,7 +132,7 @@ export class Header extends Component {
           currentAccount
           ? (
             <p style={pStyle}>
-            Contract Balance: {this.props.details.contractBalance} Ether, Token Value: {this.props.details.tokenValue} Ether</p>
+            Contract Balance: {this.props.details.contractBalance} Ether (US${this.state.contractBalanceValue}), Token Value: {this.props.details.tokenValue} Ether (US${this.state.tokenValue})</p>
           )
           : (
 
@@ -132,9 +157,6 @@ export class Header extends Component {
 
         <li>
           <Link to="/consumer_sign_up">Consumer Sign Up</Link>
-        </li>
-        <li>
-          <Link to="/business_sign_up">Business Sign Up</Link>
         </li>
       </ul>
     </nav>

@@ -73,6 +73,7 @@ export class ConsumerSignUp extends React.Component {
 
     newState.combinedString = newState.name + newState.nationalInsurance + newState.dateOfBirth + newState.secret;
     newState.combinedString = newState.combinedString.replace(/\s/g, '');
+    newState.combinedString = newState.combinedString.toLowerCase();
     newState.paddedBits = convertAndPad(newState.combinedString);
     newState.paddedBitsSpace = newState.paddedBits.split('').join(' ');
     newState.paddedHex = binaryToHex(newState.paddedBits).toLowerCase();
@@ -80,7 +81,7 @@ export class ConsumerSignUp extends React.Component {
     newState.sha256hashbinary = hexToBinary(newState.sha256hash);
     newState.bits32hash = newState.sha256hashbinary.substring(0,32);
     newState.bits32hashspace = newState.bits32hash.split('').join(' ');
-    newState.witnessCompute = './zokrates compute-witness -a ' + newState.bits32hashspace + ' ' + newState.paddedBitsSpace;
+    newState.witnessCompute = './zokrates compute-witness -a ' + newState.bits32hashspace + ' ' + newState.paddedBitsSpace + ' | tail -n 0 > computeWitness.txt';
 
     this.setState(newState);
   }

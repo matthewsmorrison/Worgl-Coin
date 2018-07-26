@@ -16,7 +16,6 @@ import { Header } from './Header';
 import { ConsumerSignUp } from './consumer/ConsumerSignUp';
 import { ConsumerBuyItems } from './consumer/ConsumerBuyItems';
 import { Orders } from './Orders';
-import { BusinessSignUp } from './businesses/BusinessSignUp';
 import { BusinessSupplyItems } from './businesses/BusinessSupplyItems';
 import { Administration } from './owner/Administration';
 
@@ -28,7 +27,7 @@ export class App extends React.Component {
 			ethereum: {
 				web3: null,
 				contractInstance: null,
-				currentAccount: null
+				currentAccount: null,
 			},
 			data: {
 				noConsumers: null,
@@ -195,8 +194,6 @@ export class App extends React.Component {
 					<Route path="/consumer_orders">
 						<Orders ethereum={this.state.ethereum} details={this.state.accountDetails}/>
 					</Route>
-
-					<Route path="/business_sign_up" component={BusinessSignUp} />
 
 					<Route path="/business_sell_items">
 					 	<BusinessSupplyItems ethereum={this.state.ethereum} items={this.state.items} details={this.state.accountDetails}/>
