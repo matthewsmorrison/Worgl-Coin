@@ -38,7 +38,6 @@ export class Header extends Component {
     var currentAccount = this.props.details.accountType;
     console.log(currentAccount);
     if (currentAccount === 'Consumer') {
-      this.forceUpdate()
       return (
             <div>
                 <header id="header">

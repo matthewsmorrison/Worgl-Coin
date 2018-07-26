@@ -66,5 +66,23 @@ contract('Verifier', function(accounts, app) {
     });
   });
 
+  it("A zk-SNARK proof should be verified as true", function() {
+
+    var A = ["0x206187067596f0cc607981a1203d67a38d06ba8fe8764ac30450002cbbf86784", "0x299a4e4b1276651621938269b9d7f7f4b378c6dfad7ef529a38ead04e0778889"]
+    var A_p = ["0xb8975e36908ef4a68acf5461609c98f1b4ead2baf5dbaf5be1baba051593f91", "0xf28063f8befcb6553557c7c737353307cddc0c94e78d095a1d4343955c85fab"]
+    var B = [["0x1a5f6be0e57b9c858fbc090b14c885c12d9adcee1fdb68e604bcedd03e121d5a", "0x17a14c12d16e62f3658538c9eb0e45350ed3f947d09491ae623e28ffaae7fa8a"], ["0x125befb0729c9d9431f2024e2d2c50ca91623dc1f57bc856fbc6c18b5364ae9b", "0x2736533c9ac6618926b6b920583c5c593d70b37c944977c2abffbf5f11956647"]];
+    var B_p = ["0x2832bc7a7ceea0b8680e58c8536e5124dceb38cd0bbc9d203c03dcdd2cd7a5ea", "0x147357890e2fa46f90dcf15170265efd5d3ed9399799e14c1b40e895709ed6b8"]
+    var C = ["0x3cb05873096dfa1637e37f48dafe8835524e52c5ca1f6b908a12a38a0d4a8fb", "0x2224eea86933936eb3a06e63d6ed3f1516e913f947c28ddeef3b7a95349981e9"]
+    var C_p = ["0x20431d83b0fe982790c95bde28bfa413cac01be363497a7e20479c27bf4348f3", "0x1859d9d4a17a1e9e781a49fa8c2a7738aefa2dd2efde4cdcf0b17e5311a6d367"]
+    var H = ["0x302ca0bbf335f75fa049b01578eaa7f52d72093eb491eb3df75d82cc9b61c4cf", "0x1cb56dcb27c2346fd3b21664392523ab171448093bba0dab6a9053c2fa732011"]
+    var K = ["0x2d160fafe272e3231efe1ec212a2b580b2fc26826724bc911fdd892a25422299", "0x4cbdf3c524147cf93665ac0bdfe4d46e90d4d436bfa48976a6877d9a3a97774"]
+    var I = [0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1];
+
+    return Verifier.deployed().then(function(instance) {
+      app = instance;
+      return app.verifyTx(A, A_p, B, B_p, C, C_p, H, K, I);
+    });
+  });
+
 
 });

@@ -93,12 +93,21 @@ contract('WorglCoin', function(accounts, app) {
     var nationalInsurance = "FAKEFAKEFAKE";
     var eligibleHash = "0x2ef30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
     var enteredHash = "0x2ed56eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
+    var A = ["0xbc48bed6b63e82175e9e3cf017f26d5f71a2f36165f3580d02514e3f2f22ae9", "0x30587068f5a1f61193afccf71f265e277de27e0651204b325b6625c2a51bd77e"];
+    var A_p = ["0x2437272ec7e61998347ed609e003d1bb9c069903c211776a6d0fc8db65906b82", "0x8df6216b168a62a4507df93468cf0e58b5221919ef86642541ddbf54c15e589"];
+    var B = [["0x8d7ce8d510b51d0a25752103da900a7f3ab7ddfa2f73e2ba682a9139c25d1f7", "0x208deb2a232d751e5e0cac266ee43d55ff9c219a0b60cd1c61971cde841a705e"], ["0x623ac694f3992eaaf7953c7827ceb6ba4da4075789b3679b74f9abe0aea444", "0xf505cf3d2fa6c24b218ef86254f83fb450f1b63f9c93373e865f04d8c5b936e"]];
+    var B_p = ["0x19de1bdf2362573a606e72331c954183c9b98f8664d093682b73ab5fbe6d93a8", "0x35a943ce82ab2db74de5f6c68375de4029c0def09dae9245db7a18641b63125"];
+    var C = ["0x12bfe3da774a0dde4238ec240c136af4d0f089e5e769ba486255104a03c2e94b", "0x1e3418e825cb53d2eeef37fa587abf9bdfcc6415361f1f6a15731effcf9b2f58"];
+    var C_p = ["0x2c5f8013378ff540b33ae444d77dd17a407762f8940c05bb692ae13bdd5cec8f", "0x1a4fd227107bba27f57bbaa9e2338d990fd80dc6bb8a8dbc1bd69479cc737df3"];
+    var H = ["0x26c0d5e8b23bd7730636067406c59342081ca73cc6f2d2fb2acd6d676be80f1e", "0x419e311996e1c6d0aba5eba8d41357a64c92091873185a5e65bfad0186330f3"];
+    var K = ["0x539752f747c989c355aecf876d0f5aeae88796b9eed8709d4c212248be089ca", "0xa0a88a63c312f8dc82741c24885e6527a9f4e090d06c823151ebd7e9cea40cc"];
+    var I = [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1];
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
       return app.addConsumerHash(eligibleHash, {from: owner, value: 0});
     }).then(function() {
-      return expectThrow(app.consumerSignUp(enteredHash, {from: consumer1, value: 0}));
+      return expectThrow(app.consumerSignUp(enteredHash, A, A_p, B, B_p, C, C_p, H, K, I, {from: consumer1, value: 0}));
     });
   });
 
@@ -111,18 +120,38 @@ contract('WorglCoin', function(accounts, app) {
     var eligibleHash1 = "0x2ed30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
     var enteredHash1 = "0x2ed30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
 
+    var A = ["0xbc48bed6b63e82175e9e3cf017f26d5f71a2f36165f3580d02514e3f2f22ae9", "0x30587068f5a1f61193afccf71f265e277de27e0651204b325b6625c2a51bd77e"];
+    var A_p = ["0x2437272ec7e61998347ed609e003d1bb9c069903c211776a6d0fc8db65906b82", "0x8df6216b168a62a4507df93468cf0e58b5221919ef86642541ddbf54c15e589"];
+    var B = [["0x8d7ce8d510b51d0a25752103da900a7f3ab7ddfa2f73e2ba682a9139c25d1f7", "0x208deb2a232d751e5e0cac266ee43d55ff9c219a0b60cd1c61971cde841a705e"], ["0x623ac694f3992eaaf7953c7827ceb6ba4da4075789b3679b74f9abe0aea444", "0xf505cf3d2fa6c24b218ef86254f83fb450f1b63f9c93373e865f04d8c5b936e"]];
+    var B_p = ["0x19de1bdf2362573a606e72331c954183c9b98f8664d093682b73ab5fbe6d93a8", "0x35a943ce82ab2db74de5f6c68375de4029c0def09dae9245db7a18641b63125"];
+    var C = ["0x12bfe3da774a0dde4238ec240c136af4d0f089e5e769ba486255104a03c2e94b", "0x1e3418e825cb53d2eeef37fa587abf9bdfcc6415361f1f6a15731effcf9b2f58"];
+    var C_p = ["0x2c5f8013378ff540b33ae444d77dd17a407762f8940c05bb692ae13bdd5cec8f", "0x1a4fd227107bba27f57bbaa9e2338d990fd80dc6bb8a8dbc1bd69479cc737df3"];
+    var H = ["0x26c0d5e8b23bd7730636067406c59342081ca73cc6f2d2fb2acd6d676be80f1e", "0x419e311996e1c6d0aba5eba8d41357a64c92091873185a5e65bfad0186330f3"];
+    var K = ["0x539752f747c989c355aecf876d0f5aeae88796b9eed8709d4c212248be089ca", "0xa0a88a63c312f8dc82741c24885e6527a9f4e090d06c823151ebd7e9cea40cc"];
+    var I = [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1];
+
+    var A2 = ["0x22c995be6343ab71cf355ddf6912f947272fb9467e27bc2c7728803e2e5cef0d", "0x193e8b2819118da117f20e228888ba8b99df99b3f0e46540bf6bedfdddfe0519"];
+    var A2_p = ["0x1d50f515607e2ee120937ed2b27bf58b9bc51e26db340f005a3a3d7af46c70bd", "0x260f63ca943edeeda7b61317ea8cb51f8e8efa4dc2c24287b63ece680171a8"];
+    var B2 = [["0x210a3027aff915db1a1d0f2f4b6fb711afa1fc40beb9b9d14b20d10bd99c6784", "0x21603971c287bc164ff25a60438e47f9d37acd7de5e15ec4e644b749b74ef48e"], ["0x85b35a69d4d9c041dd97b372ebc35d5224dcfadf358158f190311c4738f8f1a", "0x2f11e9a3fc255717df5ad143d51225bee51b135682d98d63e0ac0a4f00ac5cb4"]];
+    var B2_p = ["0x128944fc520d2190eaa82433d2fe51bc9ea6447480a99bca4067303cdd887745", "0x28651444b33ca40b28d9fccef67e5b9b36eba3e528db29d519d1d8eb2c6787f0"];
+    var C2 = ["0x1a4fb442cb45dbb5ef1612091bf11d550bcd5e98d3234d16e2097fcf1a68f6ef", "0x77cc866d57d603e7ea6f1f932ef23f06bec9676e65179ca1a0323ce6c93f4af"];
+    var C2_p = ["0xda7e771e14149af6c7eacf9ea25ebc0b5b489187e2ebf30eeaa54b5136086d0", "0x23c30be80e8ded620598036d03ba087c82a32f4afa4d53d2c545cf70e72d749d"];
+    var H2 = ["0x114d04408118edfd4e825e36859f5bf22199e103de8ddacebd75dfd85cb5eab3", "0x8c33d0eb4ea98d30ece5cde27a77da88405f503cf89aa9a4b12bc51ec00b310"];
+    var K2 = ["0xce4e22a499577f6b5906877f04cb37b251b926358f91feb96a5041ede9d41eb", "0x229c104d3f7c3d13bd5575925acd01b4f7094a0202e8756047f0d39b001b1ff2"];
+    var I2 = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1];
+
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
       return app.addConsumerHash(eligibleHash, {from: owner, value: 0});
     }).then(function() {
-      return app.consumerSignUp(enteredHash, {from: consumer1, value: 0});
+      return app.consumerSignUp(enteredHash, A, A_p, B, B_p, C, C_p, H, K, I, {from: consumer1, value: 0});
     }).then(function() {
       return app.noOfConsumers();
     }).then(function(consumers) {
       assert.equal(consumers.valueOf(), 1, "The number of consumers has not been incremented");
       return app.addConsumerHash(eligibleHash1, {from: owner, value: 0});
     }).then(function() {
-      return app.consumerSignUp(enteredHash1, {from: consumer2, value: 0});
+      return app.consumerSignUp(enteredHash1, A2, A2_p, B2, B2_p, C2, C2_p, H2, K2, I2, {from: consumer2, value: 0});
     }).then(function() {
       return app.noOfConsumers();
     }).then(function(consumers) {
@@ -137,10 +166,19 @@ contract('WorglCoin', function(accounts, app) {
   it("A consumer should not be able to sign up twice.", function() {
     var app;
     var enteredHash = "0x2ec30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
+    var A = ["0xbc48bed6b63e82175e9e3cf017f26d5f71a2f36165f3580d02514e3f2f22ae9", "0x30587068f5a1f61193afccf71f265e277de27e0651204b325b6625c2a51bd77e"];
+    var A_p = ["0x2437272ec7e61998347ed609e003d1bb9c069903c211776a6d0fc8db65906b82", "0x8df6216b168a62a4507df93468cf0e58b5221919ef86642541ddbf54c15e589"];
+    var B = [["0x8d7ce8d510b51d0a25752103da900a7f3ab7ddfa2f73e2ba682a9139c25d1f7", "0x208deb2a232d751e5e0cac266ee43d55ff9c219a0b60cd1c61971cde841a705e"], ["0x623ac694f3992eaaf7953c7827ceb6ba4da4075789b3679b74f9abe0aea444", "0xf505cf3d2fa6c24b218ef86254f83fb450f1b63f9c93373e865f04d8c5b936e"]];
+    var B_p = ["0x19de1bdf2362573a606e72331c954183c9b98f8664d093682b73ab5fbe6d93a8", "0x35a943ce82ab2db74de5f6c68375de4029c0def09dae9245db7a18641b63125"];
+    var C = ["0x12bfe3da774a0dde4238ec240c136af4d0f089e5e769ba486255104a03c2e94b", "0x1e3418e825cb53d2eeef37fa587abf9bdfcc6415361f1f6a15731effcf9b2f58"];
+    var C_p = ["0x2c5f8013378ff540b33ae444d77dd17a407762f8940c05bb692ae13bdd5cec8f", "0x1a4fd227107bba27f57bbaa9e2338d990fd80dc6bb8a8dbc1bd69479cc737df3"];
+    var H = ["0x26c0d5e8b23bd7730636067406c59342081ca73cc6f2d2fb2acd6d676be80f1e", "0x419e311996e1c6d0aba5eba8d41357a64c92091873185a5e65bfad0186330f3"];
+    var K = ["0x539752f747c989c355aecf876d0f5aeae88796b9eed8709d4c212248be089ca", "0xa0a88a63c312f8dc82741c24885e6527a9f4e090d06c823151ebd7e9cea40cc"];
+    var I = [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1];
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
-      return expectThrow(app.consumerSignUp(enteredHash, {from: consumer1, value: 0}));
+      return expectThrow(app.consumerSignUp(enteredHash, A, A_p, B, B_p, C, C_p, H, K, I, {from: consumer1, value: 0}));
     });
   });
 

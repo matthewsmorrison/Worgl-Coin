@@ -141,7 +141,8 @@ library Pairing {
         return pairing(p1, p2);
     }
 }
-contract Verifier {
+
+library Verifier {
     using Pairing for *;
     struct VerifyingKey {
         Pairing.G2Point A;
@@ -241,7 +242,7 @@ contract Verifier {
             uint[2] h,
             uint[2] k,
             uint[33] input
-        ) public {
+        ) public returns (bool) {
         Proof memory proof;
         proof.A = Pairing.G1Point(a[0], a[1]);
         proof.A_p = Pairing.G1Point(a_p[0], a_p[1]);
@@ -258,5 +259,6 @@ contract Verifier {
 
         require(verify(inputValues, proof) == 0);
         emit Verified("Transaction successfully verified.");
+        return true;
     }
 }

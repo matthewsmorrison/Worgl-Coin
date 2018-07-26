@@ -54,8 +54,9 @@ export class Administration extends React.Component {
      {
        from: ethereum.currentAccount,
        value: ethereum.web3.toWei(0, "ether")
-     });
-     console.log("Add new consumer hash: " + response);
+     }).then(function() {
+       console.log("Add new consumer hash: " + response);
+     })
   }
 
   async transferFunds(e) {

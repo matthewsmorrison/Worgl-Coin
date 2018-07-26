@@ -1,17 +1,20 @@
 import React from 'react';
 
 import { convertAndPad, sha256compression, binaryToHex, hexToBinary } from '../../utils/hash';
+import { callServer, parseServerResponse } from '../../utils/serverInteraction';
 
 export class ConsumerSignUp extends React.Component {
+
   constructor(props) {
     super(props);
-    // this.addHash = this.addHash.bind(this);
+    this.verifyDetails = this.verifyDetails.bind(this);
+
    this.state = {
      name: ' ',
      nationalInsurance: ' ',
      dateOfBirth: ' ',
      secret: ' ',
-     combinedString: null,
+     combinedString: ' ',
 
      // This will be used for computing the witness
      paddedBits: null,
@@ -27,8 +30,65 @@ export class ConsumerSignUp extends React.Component {
 
      //Witness compute
      witnessCompute: null,
+     response: null,
+     verifyStatus: 'nothing'
    }
  };
+
+  async verifyDetails(e) {
+    let newState = this.state;
+    newState.verifyStatus = 'verifying';
+    this.setState(newState);
+
+    e.preventDefault();
+    console.log('About to verify details');
+    callServer(this.state.witnessCompute)
+      .then(res => {
+        let response = res;
+        // console.log("The server response is: " + response.proofDetails.data.data);
+        var A = parseServerResponse(response.proofDetails.data.data).A;
+      	var A_p = parseServerResponse(response.proofDetails.data.data).A_p;
+      	var B = parseServerResponse(response.proofDetails.data.data).B;
+      	var B_p = parseServerResponse(response.proofDetails.data.data).B_p;
+      	var C = parseServerResponse(response.proofDetails.data.data).C;
+      	var C_p = parseServerResponse(response.proofDetails.data.data).C_p;
+      	var H = parseServerResponse(response.proofDetails.data.data).H;
+      	var K = parseServerResponse(response.proofDetails.data.data).K;
+
+        var I = this.state.bits32hashspace.split(' ');
+        I.push("1");
+
+        var inputHash = "0x" + this.state.sha256hash;
+
+        console.log(inputHash);
+        console.log(A);
+        console.log(A_p);
+        console.log(B);
+        console.log(B_p);
+        console.log(C);
+        console.log(C_p);
+        console.log(H);
+        console.log(K);
+        console.log(I);
+
+        let ethereum = this.props.ethereum;
+        let contractResponse = ethereum.contractInstance.consumerSignUp(
+          inputHash, A, A_p, B, B_p, C, C_p, H, K, I,
+         {
+           from: ethereum.currentAccount,
+           value: ethereum.web3.toWei(0, "ether")
+         });
+         console.log("New consumer signed up: " + contractResponse);
+      })
+      .catch(err => console.log(err));
+  }
+
+  displayIcon() {
+    if (this.state.verifyStatus === 'nothing') return ;
+    else if (this.state.verifyStatus === 'verified' ) return <a style={{marginLeft: "50px"}} className="fas fa-check fa-2x"></a>;
+    else return <a style={{marginLeft: "50px"}} className="fa fa-spinner fa-spin fa-2x"></a>;
+
+  }
 
  // async addHash(e) {
  //   e.preventDefault();
@@ -81,10 +141,12 @@ export class ConsumerSignUp extends React.Component {
     newState.sha256hashbinary = hexToBinary(newState.sha256hash);
     newState.bits32hash = newState.sha256hashbinary.substring(0,32);
     newState.bits32hashspace = newState.bits32hash.split('').join(' ');
-    newState.witnessCompute = './zokrates compute-witness -a ' + newState.bits32hashspace + ' ' + newState.paddedBitsSpace + ' | tail -n 0 > computeWitness.txt';
+    newState.witnessCompute = newState.bits32hashspace + ' ' + newState.paddedBitsSpace;
 
     this.setState(newState);
   }
+
+
 
     render() {
         return (
@@ -126,76 +188,14 @@ export class ConsumerSignUp extends React.Component {
               </tr>
 
               <tr>
-                <td></td>
-                <td style={{textAlign:"center"}}><a className="button special">Verify Details</a></td>
+                <td>{this.state.response}</td>
+                <td style={{textAlign:"center"}}><a onClick={this.verifyDetails} className="button special">Verify Details</a>{this.displayIcon()}</td>
               </tr>
 
             </tbody>
             </table>
             </div>
-
-
-
           	</div>
-
-            <div className="box">
-            <p><strong>For developer use</strong></p>
-            <div className="box">
-
-            <div className="table-wrapper">
-            <table>
-            <tbody>
-
-              <tr>
-                <td>Combined String</td>
-                <td>{this.state.combinedString}</td>
-              </tr>
-
-              <tr>
-                <td>Binary Padded to 512 Bits</td>
-                <td>{this.state.paddedBits}</td>
-              </tr>
-
-              <tr>
-                <td>Binary Padded to 512 Bits With Space</td>
-                <td>{this.state.paddedBitsSpace}</td>
-              </tr>
-
-              <tr>
-                <td>Hex Form of Input</td>
-                <td>{this.state.paddedHex}</td>
-              </tr>
-
-              <tr>
-                <td>The SHA256 Hash</td>
-                <td>{this.state.sha256hash}</td>
-              </tr>
-
-              <tr>
-                <td>The SHA256 (Binary)</td>
-                <td>{this.state.sha256hashbinary}</td>
-              </tr>
-
-              <tr>
-                <td>The First 32 Bits</td>
-                <td>{this.state.bits32hash}</td>
-              </tr>
-
-              <tr>
-                <td>The First 32 Bits With Space</td>
-                <td>{this.state.bits32hashspace}</td>
-              </tr>
-
-              <tr>
-                <td>Total witness compute</td>
-                <td>{this.state.witnessCompute}</td>
-              </tr>
-
-            </tbody>
-            </table>
-            </div>
-            </div>
-            </div>
           </section>
 
         );
