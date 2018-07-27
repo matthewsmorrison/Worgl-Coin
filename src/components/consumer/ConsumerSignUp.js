@@ -31,21 +31,18 @@ export class ConsumerSignUp extends React.Component {
      //Witness compute
      witnessCompute: null,
      response: null,
-     verifyStatus: 'nothing'
+     verifyStatus: 0
    }
  };
 
   async verifyDetails(e) {
-    let newState = this.state;
-    newState.verifyStatus = 'verifying';
-    this.setState(newState);
+    this.setState({verifyStatus:1});
 
     e.preventDefault();
     console.log('About to verify details');
     callServer(this.state.witnessCompute)
       .then(res => {
         let response = res;
-        // console.log("The server response is: " + response.proofDetails.data.data);
         var A = parseServerResponse(response.proofDetails.data.data).A;
       	var A_p = parseServerResponse(response.proofDetails.data.data).A_p;
       	var B = parseServerResponse(response.proofDetails.data.data).B;
@@ -54,56 +51,26 @@ export class ConsumerSignUp extends React.Component {
       	var C_p = parseServerResponse(response.proofDetails.data.data).C_p;
       	var H = parseServerResponse(response.proofDetails.data.data).H;
       	var K = parseServerResponse(response.proofDetails.data.data).K;
-
         var I = this.state.bits32hashspace.split(' ');
         I.push("1");
 
         var inputHash = "0x" + this.state.sha256hash;
-
-        console.log(inputHash);
-        console.log(A);
-        console.log(A_p);
-        console.log(B);
-        console.log(B_p);
-        console.log(C);
-        console.log(C_p);
-        console.log(H);
-        console.log(K);
-        console.log(I);
-
         let ethereum = this.props.ethereum;
-        let contractResponse = ethereum.contractInstance.consumerSignUp(
-          inputHash, A, A_p, B, B_p, C, C_p, H, K, I,
+        return ethereum.contractInstance.consumerSignUp(inputHash, A, A_p, B, B_p, C, C_p, H, K, I,
          {
            from: ethereum.currentAccount,
            value: ethereum.web3.toWei(0, "ether")
+         }).then((transactionHash) => {
+           console.log(transactionHash);
+           if(transactionHash.receipt.status === '0x00') this.setState({verifyStatus:3});
+           else this.setState({verifyStatus:2});
          });
-         console.log("New consumer signed up: " + contractResponse);
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        this.setState({verifyStatus:3});
+      })
   }
-
-  displayIcon() {
-    if (this.state.verifyStatus === 'nothing') return ;
-    else if (this.state.verifyStatus === 'verified' ) return <a style={{marginLeft: "50px"}} className="fas fa-check fa-2x"></a>;
-    else return <a style={{marginLeft: "50px"}} className="fa fa-spinner fa-spin fa-2x"></a>;
-
-  }
-
- // async addHash(e) {
- //   e.preventDefault();
- //   console.log('About to add a new business');
- //   let ethereum = this.props.ethereum;
- //   let hash = this.state.consumerHash;
- //
- //   console.log(ethereum);
- //   let response = ethereum.contractInstance.consumerSignUp(hash,
- //    {
- //      from: ethereum.currentAccount,
- //      value: ethereum.web3.toWei(0, "ether")
- //    });
- //    console.log("New consumer sign up: " + response);
- //  }
 
   updateState(evt) {
     let target = evt.target;
@@ -146,8 +113,6 @@ export class ConsumerSignUp extends React.Component {
     this.setState(newState);
   }
 
-
-
     render() {
         return (
 
@@ -174,7 +139,7 @@ export class ConsumerSignUp extends React.Component {
 
               <tr>
                 <td>Your National Insurance Number</td>
-                <td><input type="text" id="nationalInsurance" onChange={evt => this.updateState(evt)}/></td>
+                <td><input type="text" id="nationalInsurance" onChange={evt => this.updateState(evt)} required/></td>
               </tr>
 
               <tr>
@@ -188,8 +153,19 @@ export class ConsumerSignUp extends React.Component {
               </tr>
 
               <tr>
-                <td>{this.state.response}</td>
-                <td style={{textAlign:"center"}}><a onClick={this.verifyDetails} className="button special">Verify Details</a>{this.displayIcon()}</td>
+
+                <td style={{textAlign:"center"}}>
+                  <a onClick={this.verifyDetails} className="button special fit small">Verify Details</a>
+                </td>
+
+                <td style={{textAlign:"center"}}>
+                  { this.state.verifyStatus === 1 && <div><a style = {{marginBottom: "10px"}} className="fa fa-spinner fa-spin fa-3x"></a><br/><p>We are just confirming your details.<br/>You should get a metamask pop-up shortly (1 min).</p></div> }
+                  { this.state.verifyStatus === 2 && <div><a style = {{marginBottom: "10px"}} className="far fa-smile fa-3x"></a><br/><p>You are all set.<br/>Just refresh the page to start using the service.</p></div> }
+                  { this.state.verifyStatus === 3 && <div><a style = {{marginBottom: "10px"}} className="far fa-frown fa-3x"></a><br/><p>Something went wrong and we could not sign you up.<br/>Please go to our FAQ page to find out more.</p></div> }
+                </td>
+
+
+
               </tr>
 
             </tbody>

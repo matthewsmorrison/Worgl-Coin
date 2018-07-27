@@ -1,6 +1,8 @@
 # WörglCoin
 
-WörglCoin is a test project to demonstrate the implementation of a government-backed Universal Basic Income
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/matthewsmorrison/TLS-N/issues) [![Join the chat at https://gitter.im/Worgl-Coin/](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Worgl-Coin/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+WörglCoin is a test project to demonstrate the implementation of an Ether-backed Universal Basic Income
 using the Ethereum network.
 
 ## Getting Started
@@ -20,9 +22,16 @@ Web Browser With Metamask
 
 ### Installing
 
-In order to install all the dependencies required, run the script 'INSTALL.sh'.
+In order to get the project up and running:
 
-Once you have done this if you run 'npm run start' you will get a local deployment of the site.
+```
+$ git clone https://github.com/matthewsmorrison/Worgl-Coin
+$ cd Worgl-Coin
+$ npm install
+$ ganache-cli
+$ npm run start
+$ node server
+```
 
 ## Running the tests
 
@@ -48,6 +57,7 @@ $ ./node_modules/.bin/solidity-coverage
 * [Node.js](https://nodejs.org/en/) - An asynchronous event driven JavaScript runtime used to build scalable network applications
 * [MetaMask](https://metamask.io/) - A browser plug-in allowing you to run DApps
 * [Solidity-Coverage](https://github.com/sc-forks/solidity-coverage) - Solidity code coverage tool
+* [Zokrates](https://github.com/JacobEberhardt/ZoKrates) - A toolbox for zk-SNARKs on Ethereum
 
 ## Authors
 
@@ -58,7 +68,3 @@ See also the list of [contributors](https://github.com/matthewsmorrison/Worgl-Co
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/matthewsmorrison/Worgl-Coin/blob/master/LICENSE) file for details
-
-<!-- ## Acknowledgments
-
-* [XX] -->
