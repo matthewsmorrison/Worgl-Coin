@@ -22,7 +22,8 @@ app.post('/zk-snark/compute', (req, res) => {
 
   var output;
 
-  console.log("Spawning docker instance and generating proof...");
+  console.log("Received a post request...");
+  console.log("Generating zero-knowledge proof for requestor...");
   const child = spawn('docker', ['run', '-i', 'matthewsmorrison/zokrates:executable', '/bin/bash']);
   child.stdin.write("cd ZoKrates/target/release\n");
   child.stdin.write("./zokrates compute-witness -a " + req.body.input + " | tail -n 0 > computeWitness.txt\n");
@@ -41,6 +42,8 @@ app.post('/zk-snark/compute', (req, res) => {
 
   child.on('exit', function (code, signal) {
   console.log('child process exited with ' + `code ${code} and signal ${signal}`);
+  console.log("The zero-knowledge proof has been succesfully generated.");
+  console.log("Sending back the response.");
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({proofDetails: output}));
   });
