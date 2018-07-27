@@ -1,22 +1,25 @@
-Next Steps
-----------
-
-- Look into exactly how docker works. Will need to compute the same witness from the compiled code on remote machine.
-- Run the validate witness code on remote server and return variables for smart contract validation
-- Link docker to the git repo so don't need to keep rebuilding
-
-Longer Term
+Next-Steps
 -----------
 
+- Add feedback to all metamask events. Copy what is done in consumer sign up.
+- Work out why social icons not showing in footer
+- Re-run code coverage with new Verification.sol
+- Get USD values to show up on admin page
 - Need to tighten up security - need to pass images, user generated content etc.
 - Understand why the reduced navigation panel does not update (consumer sign up, business sign up)
-- Show that a transaction has gone through successfully and tell the user (use Metamask event)?
 - Add delivery address somehow - drop-off locations?
 - Make Worlcoin into interface so that others businesses can accept it on their site
-- Can you use a stablecoin? Stable-coin: https://www.arccy.org/
-- Ropsten deployment
-- Website deployment
 
+If-Time (Not Priority)
+----------------------
+
+- Ropsten deployment
+- Website Live Deployment
+
+Run Back-End Server
+-------------------
+
+$ node server.js
 
 Docker Remove
 -------------

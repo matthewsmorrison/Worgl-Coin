@@ -139,15 +139,31 @@ contract WorglCoin {
   /*
   * @dev                          allows the owner of the contract to add a token recipient
   * @param    hash                SHA-256 hash of the consumer signing up
+  * @param    a                   [XX]
+  * @param    a_p                 [XX]
+  * @param    b                   [XX]
+  * @param    b_p                 [XX]
+  * @param    c                   [XX]
+  * @param    c_p                 [XX]
+  * @param    h                   [XX]
+  * @param    k                   [XX]
+  * @param    input               [XX]
   */
-  function consumerSignUp(bytes32 hash) public {
+  function consumerSignUp(
+    bytes32 hash,
+    uint[2] a,
+    uint[2] a_p,
+    uint[2][2] b,
+    uint[2] b_p,
+    uint[2] c,
+    uint[2] c_p,
+    uint[2] h,
+    uint[2] k,
+    uint[33] input) public {
     // Check that the address is not already in the system
     require(!consumerDetails[msg.sender].isSet);
-
-    // The problem here is that someone could just read hashes and then enter them.
-    // If you enter details (name, address etc.) people will be able to see this in the transaction hash
-    // Need to think of a way to do this with privacy and compare against eligible data hashes
     require(eligibleConsumers[hash]);
+    require(Verifier.verifyTx(a, a_p, b, b_p, c, c_p, h, k, input));
 
     // Add the consumer to the database
     Consumer memory newConsumer;

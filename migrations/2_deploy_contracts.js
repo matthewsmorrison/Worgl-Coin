@@ -4,6 +4,7 @@ var Verifier = artifacts.require("./Verifier.sol");
 tokenValue = 1000;
 tokenBalance = 1000;
 module.exports = function(deployer) {
-  deployer.deploy(WorglCoin, tokenValue, tokenBalance);
   deployer.deploy(Verifier);
+  deployer.link(Verifier, WorglCoin);
+  deployer.deploy(WorglCoin, tokenValue, tokenBalance);
 };
