@@ -234,7 +234,8 @@ contract WorglCoin {
     // Pay out all funds to business
     for (uint j = 0; j<noOfBusinesses; j++) {
       businessDetails[businessAddresses[j]].tokenBalance = 0;
-      businessAddresses[j].transfer(mul(businessDetails[businessAddresses[j]].tokenBalance, tokenValue));
+      businessAddresses[j].transfer(businessDetails[businessAddresses[j]].tokenBalance * tokenValue);
+      balance = sub(balance, businessDetails[businessAddresses[j]].tokenBalance * tokenValue);
     }
 
     emit TokenDistribution();

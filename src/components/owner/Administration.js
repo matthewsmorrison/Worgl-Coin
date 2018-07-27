@@ -110,12 +110,17 @@ export class Administration extends React.Component {
     let ethereum = this.props.ethereum;
 
     console.log(ethereum);
-    let response = ethereum.contractInstance.resetTokenBalance(
+    return ethereum.contractInstance.resetTokenBalance(
       {
         from: ethereum.currentAccount,
         value: ethereum.web3.toWei(0, "ether")
-      });
-    console.log("Resetting the token balance " + response);
+      }).then((transactionHash) => {
+        console.log(transactionHash);
+   })
+   .catch(err => {
+     console.log(err);
+     this.setState({verifyStatus:3});
+   })
   }
 
   async changeOwner(e) {
@@ -246,19 +251,22 @@ export class Administration extends React.Component {
 
               <tr>
                 <td>Add funds to the contract (in ether)</td>
-                <td colSpan="2"><input style={{textAlign:"center"}} type="number" id="funds" onChange={evt => this.updateState(evt)}/></td>
+                <td><input style={{textAlign:"center"}} type="number" id="funds" onChange={evt => this.updateState(evt)}/></td>
+                <td>US${(this.state.transferFunds * this.props.ethereum.ethPrice).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
                 <td style={{textAlign:"center"}}><a onClick={this.transferFunds} className="button special fit small">Transfer Funds</a></td>
               </tr>
 
               <tr>
-                <td>Change number of tokens distributed</td>
-                <td colSpan="2"><input style={{textAlign:"center"}} type="number" id="tokenNumber" placeholder="# of tokens" onChange={evt => this.updateState(evt)}/></td>
+                <td>Change number of tokens distributed per month</td>
+                <td><input style={{textAlign:"center"}} type="number" id="tokenNumber" placeholder="# of tokens" onChange={evt => this.updateState(evt)}/></td>
+                <td>US${(((this.state.tokenValue * this.props.ethereum.ethPrice)/1000000000000000000) * this.state.tokenNumber).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/month</td>
                 <td style={{textAlign:"center"}}><a onClick={this.changeTokenBalance} className="button special fit small">Change Token Top-Up</a></td>
               </tr>
 
               <tr>
                 <td>Change value of each token</td>
-                <td colSpan="2"><input style={{textAlign:"center"}} type="number" id="tokenValue" placeholder="Ether Per Token" onChange={evt => this.updateState(evt)}/></td>
+                <td><input style={{textAlign:"center"}} type="number" id="tokenValue" placeholder="Ether Per Token" onChange={evt => this.updateState(evt)}/></td>
+                <td>US${((this.state.tokenValue * this.props.ethereum.ethPrice)/1000000000000000000).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}/token</td>
                 <td style={{textAlign:"center"}}><a onClick={this.changeTokenValue} className="button special fit small">Change Token Value</a></td>
               </tr>
 

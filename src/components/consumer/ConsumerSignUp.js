@@ -159,9 +159,9 @@ export class ConsumerSignUp extends React.Component {
                 </td>
 
                 <td style={{textAlign:"center"}}>
-                  { this.state.verifyStatus === 1 && <div><a style = {{marginBottom: "10px"}} className="fa fa-spinner fa-spin fa-3x"></a><br/><p>We are just confirming your details.<br/>You should get a metamask pop-up shortly (1 min).</p></div> }
-                  { this.state.verifyStatus === 2 && <div><a style = {{marginBottom: "10px"}} className="far fa-smile fa-3x"></a><br/><p>You are all set.<br/>Just refresh the page to start using the service.</p></div> }
-                  { this.state.verifyStatus === 3 && <div><a style = {{marginBottom: "10px"}} className="far fa-frown fa-3x"></a><br/><p>Something went wrong and we could not sign you up.<br/>Please go to our FAQ page to find out more.</p></div> }
+                  { this.state.verifyStatus === 1 && <div><a style={{marginBottom: "10px"}} className="fa fa-spinner fa-spin fa-3x"></a><br/><p>We are just confirming your details.<br/>You should get a metamask pop-up shortly (1 min).</p></div> }
+                  { this.state.verifyStatus === 2 && <div><a style={{marginBottom: "10px"}} className="far fa-smile fa-3x"></a><br/><p>You are all set.<br/>Just refresh the page to start using the service.</p></div> }
+                  { this.state.verifyStatus === 3 && <div><a style={{marginBottom: "10px"}} className="far fa-frown fa-3x"></a><br/><p>Something went wrong and we could not sign you up.<br/>Please go to our FAQ page to find out more.</p></div> }
                 </td>
 
 

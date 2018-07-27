@@ -85,8 +85,10 @@ export class IndividualItem extends React.Component {
           { details.accountType === 'Consumer' &&
 
           <td style={{textAlign:"center", verticalAlign:"middle"}}>
-              <input type="number" id="quantityDemand" style={{textAlign:"center"}} min="1" step="1" placeholder="Quantity Wanted" onChange={evt => this.updateState(evt)}/><br/><br/>
-              <a onClick={this.buyItem} className="button special fit small">Buy Item</a>
+              <input type="number" id="quantityDemand" style={{textAlign:"center", marginBottom:"10px"}} min="1" step="1" placeholder="Quantity Wanted" onChange={evt => this.updateState(evt)}/><br/>
+              Total UBI Tokens: {(this.state.quantityDemand * item[4].toNumber()).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}<br/>
+              New Balance: {(this.props.details.tokenBalance - (this.state.quantityDemand * item[4].toNumber())).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}<br/>
+              <a style={{marginTop:"10px"}}onClick={this.buyItem} className="button special fit small">Buy Item</a>
           </td>
 
           }

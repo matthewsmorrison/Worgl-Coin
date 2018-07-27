@@ -72,7 +72,7 @@ export async function getAllItems(contractInstance) {
 
   for (let i = 0; i < itemIDs.length; i++) {
     let item = await contractInstance.allItems(itemIDs[i]);
-    items.push(item);
+    if(item[3].valueOf() !== 0) items.push(item);
   }
 
   return items;

@@ -10,11 +10,11 @@ export class Footer extends React.Component {
                           <i className="fab fa-github fa-2x"></i>
                         </a>
 
-                        <a href='https://gitter.im/Worgl-Coin/' target="_blank" style = {{marginLeft: "20px"}}>
+                        <a href='https://gitter.im/Worgl-Coin/' target="_blank" style={{marginLeft: "20px"}}>
                           <i className="fab fa-gitter fa-2x"></i>
                         </a>
 
-                        <a href='/' target="_blank" style = {{marginLeft: "20px"}}>
+                        <a href='/' target="_blank" style={{marginLeft: "20px"}}>
                           <i className="fab fa-telegram fa-2x"></i>
                         </a>
 

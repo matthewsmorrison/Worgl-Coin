@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import { getWeb3, getContractInstance, getAccounts, getAdminData, getAllItems, getAccountDetails } from '../utils/ethereum';
+import { getEthPrice } from '../utils/pricefeed.js';
 
 // import templates
 import { ConsumerFAQ } from '../templates/ConsumerFAQ';
@@ -28,6 +29,7 @@ export class App extends React.Component {
 				web3: null,
 				contractInstance: null,
 				currentAccount: null,
+				ethPrice: 0
 			},
 			data: {
 				noConsumers: null,
@@ -49,10 +51,9 @@ export class App extends React.Component {
 	componentDidMount() {
 		// get network provider and web3 instance.
 		// see utils/getWeb3 for more info.
-		getWeb3()
+				getWeb3()
 			.then(web3 => {
 				// console.log(web3);
-
 				let updatedState = this.state;
 				updatedState.ethereum.web3 = web3;
 				this.setState(updatedState);
@@ -98,7 +99,19 @@ export class App extends React.Component {
 				contractInstance.BusinessAdded().watch(getData);
 				contractInstance.ItemAdded().watch(getData);
 				contractInstance.OrderAdded().watch(getData);
-				return getAdminData(contractInstance);
+				return getEthPrice();
+				})
+				.then(price => {
+					let updatedState = this.state;
+					updatedState.ethereum.ethPrice = price;
+					this.setState(updatedState);
+					return getContractInstance(this.state.ethereum.web3.currentProvider);
+
+				})
+				.then( contractInstance => {
+
+
+					return getAdminData(contractInstance);
 			})
 			.then(data => {
 

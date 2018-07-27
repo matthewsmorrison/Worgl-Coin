@@ -107,12 +107,14 @@ export class BusinessSupplyItems extends React.Component {
               <td><input type="number" id="price" min="1" step="1" onChange={evt => this.updateState(evt)}/></td>
             </tr>
 
+            <tr>
+              <td style={{textAlign:"left"}}><a onClick={this.addItem} className="button special">Add Item</a></td>
+              <td></td>
+            </tr>
+
             </tbody>
             </table>
             </div>
-
-            <a onClick={this.addItem} className="button special">Add Item</a>
-
           	</div>
 
             <div className="box">
