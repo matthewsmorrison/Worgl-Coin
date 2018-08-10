@@ -54,6 +54,8 @@ export class ConsumerSignUp extends React.Component {
         var I = this.state.bits32hashspace.split(' ');
         I.push("1");
 
+        console.log(I);
+
         var inputHash = "0x" + this.state.sha256hash;
         let ethereum = this.props.ethereum;
         return ethereum.contractInstance.consumerSignUp(inputHash, A, A_p, B, B_p, C, C_p, H, K, I,
@@ -105,8 +107,11 @@ export class ConsumerSignUp extends React.Component {
     newState.paddedBitsSpace = newState.paddedBits.split('').join(' ');
     newState.paddedHex = binaryToHex(newState.paddedBits).toLowerCase();
     newState.sha256hash = sha256compression(newState.paddedHex);
+    console.log(newState.sha256hash);
     newState.sha256hashbinary = hexToBinary(newState.sha256hash);
+
     newState.bits32hash = newState.sha256hashbinary.substring(0,32);
+    console.log(newState.bits32hash)
     newState.bits32hashspace = newState.bits32hash.split('').join(' ');
     newState.witnessCompute = newState.bits32hashspace + ' ' + newState.paddedBitsSpace;
 

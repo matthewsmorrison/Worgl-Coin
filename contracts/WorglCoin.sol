@@ -163,6 +163,7 @@ contract WorglCoin {
     // Check that the address is not already in the system
     require(!consumerDetails[msg.sender].isSet);
     require(eligibleConsumers[hash]);
+    require(check32BitsHash(input, hash));
     require(Verifier.verifyTx(a, a_p, b, b_p, c, c_p, h, k, input));
 
     // Add the consumer to the database
@@ -462,7 +463,7 @@ contract WorglCoin {
   /******** INTERNAL FUNCTIONS *******/
   /***********************************/
 
-  /**
+  /*
   * @dev Multiplies two numbers, throws on overflow.
   */
   function mul(uint256 a, uint256 b) internal pure returns (uint256 c) {
@@ -478,7 +479,7 @@ contract WorglCoin {
     return c;
   }
 
-  /**
+  /*
   * @dev Subtracts two numbers, throws on overflow (i.e. if subtrahend is greater than minuend).
   */
   function sub(uint256 a, uint256 b) internal pure returns (uint256) {
@@ -486,13 +487,68 @@ contract WorglCoin {
     return a - b;
   }
 
-  /**
+  /*
   * @dev Adds two numbers, throws on overflow.
   */
   function add(uint256 a, uint256 b) internal pure returns (uint256 c) {
     c = a + b;
     assert(c >= a);
     return c;
+  }
+
+  /*
+  * @dev                           Checks an array of bits matches a hex
+  * @param    input_bits           the first 32 bits of the hash to be checked
+  * @param    hash_value           the full hash
+  * @return   bool                 whether the
+  */
+  function check32BitsHash(uint[33] input_bits, bytes32 hash_value) internal pure returns (bool) {
+    uint hash_value_check1;
+    uint hash_value_check2;
+    uint input_bits_check1;
+    uint input_bits_check2;
+    bytes1 current_bytes1_hash;
+
+    for (uint i=0; i<4; i++) {
+      current_bytes1_hash = hash_value[0];
+
+      // First check the left value
+      hash_value_check1 = getLeftCoordinate(hash_value[i]);
+      input_bits_check1 = (input_bits[(i*2*4)] * 8) + (input_bits[(i*2*4)+1] * 4) + (input_bits[(i*2*4)+2] * 2) + (input_bits[(i*2*4)+3] * 1);
+
+      if (hash_value_check1 != input_bits_check1) {
+        return false;
+      }
+
+      hash_value_check2 = getRightCoordinate(hash_value[i]);
+      input_bits_check2 = (input_bits[(i*2*4)+4] * 8) + (input_bits[(i*2*4)+5] * 4) + (input_bits[(i*2*4)+6] * 2) + (input_bits[(i*2*4)+7] * 1);
+
+      if (hash_value_check2 != input_bits_check2) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /*
+  * @dev                           Gets the left most 4 bits of a byte1
+  * @param    input_bits           the 8 bit input
+  * @return   bool                 returns an integer representation of the hex value
+  */
+  function getRightCoordinate(byte input) internal pure returns (uint) {
+    byte val = input & byte(15);
+    return uint(val);
+  }
+
+  /*
+  * @dev                           Gets the right most 4 bits of a byte1
+  * @param    input_bits           the 8 bit input
+  * @return   bool                 returns an integer representation of the hex value
+  */
+  function getLeftCoordinate(byte input) internal pure returns (uint) {
+    byte val = input >> 4;
+    return uint(val);
   }
 
 }

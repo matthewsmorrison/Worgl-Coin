@@ -113,17 +113,18 @@ contract('WorglCoin', function(accounts, app) {
 
   it("A consumer that does not have the right zero knowledge proof cannot sign up (pairing mistake)", function() {
     var app;
-    var eligibleHash = "0x2ef30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f696";
-    var enteredHash = "0x2ef30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f696";
-    var A = ["0xbc58bed6b63e82175e9e3cf017f26d5f71a2f36165f3580d02514e3f2f22ae9", "0x30587068f5a1f61193afccf71f265e277de27e0651204b325b6625c2a51bd77e"];
-    var A_p = ["0x2437272ec7e61998347ed609e003d1bb9c069903c211776a6d0fc8db65906b82", "0x8df6216b168a62a4507df93468cf0e58b5221919ef86642541ddbf54c15e589"];
-    var B = [["0x8d7ce8d510b51d0a25752103da900a7f3ab7ddfa2f73e2ba682a9139c25d1f7", "0x208deb2a232d751e5e0cac266ee43d55ff9c219a0b60cd1c61971cde841a705e"], ["0x623ac694f3992eaaf7953c7827ceb6ba4da4075789b3679b74f9abe0aea444", "0xf505cf3d2fa6c24b218ef86254f83fb450f1b63f9c93373e865f04d8c5b936e"]];
-    var B_p = ["0x19de1bdf2362573a606e72331c954183c9b98f8664d093682b73ab5fbe6d93a8", "0x35a943ce82ab2db74de5f6c68375de4029c0def09dae9245db7a18641b63125"];
-    var C = ["0x12bfe3da774a0dde4238ec240c136af4d0f089e5e769ba486255104a03c2e94b", "0x1e3418e825cb53d2eeef37fa587abf9bdfcc6415361f1f6a15731effcf9b2f58"];
-    var C_p = ["0x2c5f8013378ff540b33ae444d77dd17a407762f8940c05bb692ae13bdd5cec8f", "0x1a4fd227107bba27f57bbaa9e2338d990fd80dc6bb8a8dbc1bd69479cc737df3"];
-    var H = ["0x26c0d5e8b23bd7730636067406c59342081ca73cc6f2d2fb2acd6d676be80f1e", "0x419e311996e1c6d0aba5eba8d41357a64c92091873185a5e65bfad0186330f3"];
-    var K = ["0x539752f747c989c355aecf876d0f5aeae88796b9eed8709d4c212248be089ca", "0xa0a88a63c312f8dc82741c24885e6527a9f4e090d06c823151ebd7e9cea40cc"];
-    var I = [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1];
+    var eligibleHash = "0x66bfd2155426f63f050358d409d5bb3cbc928327aede47d24b74e84ad78fce80";
+    var enteredHash = "0x66bfd2155426f63f050358d409d5bb3cbc928327aede47d24b74e84ad78fce80";
+
+    var A = ["0xbb76a756f25dc4a552f8db4d18a2ebc1bb1afd9daf6acf577d2cbb7d854325b", "0x2bff206a5b92001be5865fc66bb20d73721e5cf2b87d8d4387502c1ebca9f7e2"];
+    var A_p = ["0x17fb19b5fc6b9cb214e1942facfa22bb03d94b45f5e7eefde682a8ef6d7118ed", "0x1a921ddf54167f0c0d2fed831b7b4c3ed32dbf33eccf503301f362ab40a58caf"];
+    var B = [["0x1679f5e46e7ad147ad283aa591e989494ed0aa3ccf2292b93d82811cd4ab2494", "0x2245db548c7b0fc51cfb5e7d869b6977c5bdb617f3cb1cc3aade2efbed03ffe5"], ["0x21dbbe117d8f99f421336b5c5906730bda57c923cb5eb5197bba4e99ed8ee8e7", "0x537df6caa38a64b7b2b0b9b3286bb7a298eccb60a29f3287c72b024ffb3c71"]];
+    var B_p = ["0x1564c23ee1043c9c964f5499084e969851e786a43335b8c8878ca11979dbdde6", "0x14ff3afff9fdd076c0a3335ee6c700ea120f0ad83e69b0506e2bcc0bb422b474"];
+    var C = ["0x8422040ac6a5eb7c50da9e4966986f59449582c04c64415f1f5886430f3cee9", "0x200668f89ad7a0fbbac875605fc2d361a697799163969421475116689c879c4d"];
+    var C_p = ["0x13bf2c64f25ccfab64bbbe736cb2bddec88d0287a39442d18c2a79b01645168e", "0x43f4154303841cd7849514844fccecb9f93233e81071f766fa025b9c2d90cf6"];
+    var H = ["0x267925dc922b66d87b716aef2d25e5a9cc2b79a3ff3c0ac572eb44cf4d79b265", "0x6859de13201825bc307070e37a0a6f7f17ca1e863b4d250507a841a4fec4031"];
+    var K = ["0xa7c310649802bbe6177e64765a4efd2eb2873c25c92931de44727699f2df69f", "0x20a5332886fc31b4b6f95d9fd4b94d4eb82b7bdb9006ed6a95c86b0a2a5d335"];
+    var I = [0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1];
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
@@ -135,17 +136,18 @@ contract('WorglCoin', function(accounts, app) {
 
   it("A consumer that does not have the right zero knowledge proof cannot sign up (input mistake)", function() {
     var app;
-    var eligibleHash = "0x2ef30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f698";
-    var enteredHash = "0x2ef30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f698";
-    var A = ["0xbc58bed6b63e82175e9e3cf017f26d5f71a2f36165f3580d02514e3f2f22ae9", "0x30587068f5a1f61193afccf71f265e277de27e0651204b325b6625c2a51bd77e"];
-    var A_p = ["0x2437272ec7e61998347ed609e003d1bb9c069903c211776a6d0fc8db65906b82", "0x8df6216b168a62a4507df93468cf0e58b5221919ef86642541ddbf54c15e589"];
-    var B = [["0x8d7ce8d510b51d0a25752103da900a7f3ab7ddfa2f73e2ba682a9139c25d1f7", "0x208deb2a232d751e5e0cac266ee43d55ff9c219a0b60cd1c61971cde841a705e"], ["0x623ac694f3992eaaf7953c7827ceb6ba4da4075789b3679b74f9abe0aea444", "0xf505cf3d2fa6c24b218ef86254f83fb450f1b63f9c93373e865f04d8c5b936e"]];
-    var B_p = ["0x19de1bdf2362573a606e72331c954183c9b98f8664d093682b73ab5fbe6d93a8", "0x35a943ce82ab2db74de5f6c68375de4029c0def09dae9245db7a18641b63125"];
-    var C = ["0x12bfe3da774a0dde4238ec240c136af4d0f089e5e769ba486255104a03c2e94b", "0x1e3418e825cb53d2eeef37fa587abf9bdfcc6415361f1f6a15731effcf9b2f58"];
-    var C_p = ["0x2c5f8013378ff540b33ae444d77dd17a407762f8940c05bb692ae13bdd5cec8f", "0x1a4fd227107bba27f57bbaa9e2338d990fd80dc6bb8a8dbc1bd69479cc737df3"];
-    var H = ["0x26c0d5e8b23bd7730636067406c59342081ca73cc6f2d2fb2acd6d676be80f1e", "0x419e311996e1c6d0aba5eba8d41357a64c92091873185a5e65bfad0186330f3"];
-    var K = ["0x539752f747c989c355aecf876d0f5aeae88796b9eed8709d4c212248be089ca", "0xa0a88a63c312f8dc82741c24885e6527a9f4e090d06c823151ebd7e9cea40cc"];
-    var I = [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1];
+    var eligibleHash = "0x08e538c542c2a9415f44fad765d2992d6f7c5cc74dd6faf7b84df872be3ebcd6";
+    var enteredHash = "0x08e538c542c2a9415f44fad765d2992d6f7c5cc74dd6faf7b84df872be3ebcd6";
+
+    var A = ["0x9245837ab0419e7b7dd2318d7bbd3f1a8dc01d1b2c22e0e75e0469d74f2254e", "0x2d40739a5c9bc3b6b4ff9fb1b187b044d02189a18b6d9f72319a952e36cb3b1d"];
+    var A_p = ["0xcf3d5371f2ea5bf08d41d5387a7e3e150f8be5860502cdb603af8371c0101e5", "0x1e9999879d4d0e0d62de31c4a1f17dca66898224ce6d149c6bf688e940766ced"];
+    var B = [["0x128fa53276760e30863ac0a1249408004233c6956cf2c9548f8b2f8c86e9a00d", "0x209617a7acf7224f95f2e6efa4d9d43e4785458e55e79bc9da31d57596406d27"], ["0x2ac46a6628f887069d3c62ca2556c75c2ee696f9f803f0927ac5fca2a26ea4a", "0x245e373884daf9f0c8dc55927801596dde1010c69f01257ec6fc29ae7e4fda4f"]];
+    var B_p = ["0x1a3a3674afd6fa2acc162cc330fd57a09819873b40f323cc78f5ab074f4ff2f4", "0x2f3b58d34192ecf8b96976b55c10498d4e1df553d26925d88777fbbe372ca27e"];
+    var C = ["0x3d2681f9e4acb6b66601188c666f772ab571b2b0a843bcae40e7b4e235c3277", "0xed3dd30c4666717ce2a30cef03bec005df0e5cdb71bf4488e7dbfe7f4aa5cbb"];
+    var C_p = ["0x1c5dcf9ba2a1b964f774f8bab2b71e0a1a871cd8b7ec6990106b9f9f97c65c53", "0x25e57a35d9868d0aa1753da59b6de2ff5115873e925132b1cd31ffe8a36f718"];
+    var H = ["0x34b47d249a77e03257c12796099fe8c8c435223b309c8157579defd370c0f63", "0x2c3a96d7a38e10c79d958806549ced6c56791a650081bbd992c330c4ad07bffe"];
+    var K = ["0x5872b46e4a3ca06a63f2dbd1659faa293597b75c8f8f4f635231f853b8ac03a", "0xd8bd8131df9df0e11aca96d91a81375069213793ff5bbeb995563ebffbc81ec"];
+    var I = [0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1];
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
@@ -159,43 +161,36 @@ contract('WorglCoin', function(accounts, app) {
 
   it("A consumer that enters the right details should be able to sign up", function() {
     var app;
-    var eligibleHash = "0x2ec30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
-    var enteredHash = "0x2ec30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
+    var enteredHash = "0x66bfd2155426f63f050358d409d5bb3cbc928327aede47d24b74e84ad78fce80";
+    var enteredHash1 = "0x08e538c542c2a9415f44fad765d2992d6f7c5cc74dd6faf7b84df872be3ebcd6";
 
-    var eligibleHash1 = "0x2ed30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
-    var enteredHash1 = "0x2ed30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
+    var A = ["0xbb77a756f25dc4a552f8db4d18a2ebc1bb1afd9daf6acf577d2cbb7d854325b", "0x2bff206a5b92001be5865fc66bb20d73721e5cf2b87d8d4387502c1ebca9f7e2"];
+    var A_p = ["0x17fb19b5fc6b9cb214e1942facfa22bb03d94b45f5e7eefde682a8ef6d7118ed", "0x1a921ddf54167f0c0d2fed831b7b4c3ed32dbf33eccf503301f362ab40a58caf"];
+    var B = [["0x1679f5e46e7ad147ad283aa591e989494ed0aa3ccf2292b93d82811cd4ab2494", "0x2245db548c7b0fc51cfb5e7d869b6977c5bdb617f3cb1cc3aade2efbed03ffe5"], ["0x21dbbe117d8f99f421336b5c5906730bda57c923cb5eb5197bba4e99ed8ee8e7", "0x537df6caa38a64b7b2b0b9b3286bb7a298eccb60a29f3287c72b024ffb3c71"]];
+    var B_p = ["0x1564c23ee1043c9c964f5499084e969851e786a43335b8c8878ca11979dbdde6", "0x14ff3afff9fdd076c0a3335ee6c700ea120f0ad83e69b0506e2bcc0bb422b474"];
+    var C = ["0x8422040ac6a5eb7c50da9e4966986f59449582c04c64415f1f5886430f3cee9", "0x200668f89ad7a0fbbac875605fc2d361a697799163969421475116689c879c4d"];
+    var C_p = ["0x13bf2c64f25ccfab64bbbe736cb2bddec88d0287a39442d18c2a79b01645168e", "0x43f4154303841cd7849514844fccecb9f93233e81071f766fa025b9c2d90cf6"];
+    var H = ["0x267925dc922b66d87b716aef2d25e5a9cc2b79a3ff3c0ac572eb44cf4d79b265", "0x6859de13201825bc307070e37a0a6f7f17ca1e863b4d250507a841a4fec4031"];
+    var K = ["0xa7c310649802bbe6177e64765a4efd2eb2873c25c92931de44727699f2df69f", "0x20a5332886fc31b4b6f95d9fd4b94d4eb82b7bdb9006ed6a95c86b0a2a5d335"];
+    var I = [0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1];
 
-    var A = ["0xbc48bed6b63e82175e9e3cf017f26d5f71a2f36165f3580d02514e3f2f22ae9", "0x30587068f5a1f61193afccf71f265e277de27e0651204b325b6625c2a51bd77e"];
-    var A_p = ["0x2437272ec7e61998347ed609e003d1bb9c069903c211776a6d0fc8db65906b82", "0x8df6216b168a62a4507df93468cf0e58b5221919ef86642541ddbf54c15e589"];
-    var B = [["0x8d7ce8d510b51d0a25752103da900a7f3ab7ddfa2f73e2ba682a9139c25d1f7", "0x208deb2a232d751e5e0cac266ee43d55ff9c219a0b60cd1c61971cde841a705e"], ["0x623ac694f3992eaaf7953c7827ceb6ba4da4075789b3679b74f9abe0aea444", "0xf505cf3d2fa6c24b218ef86254f83fb450f1b63f9c93373e865f04d8c5b936e"]];
-    var B_p = ["0x19de1bdf2362573a606e72331c954183c9b98f8664d093682b73ab5fbe6d93a8", "0x35a943ce82ab2db74de5f6c68375de4029c0def09dae9245db7a18641b63125"];
-    var C = ["0x12bfe3da774a0dde4238ec240c136af4d0f089e5e769ba486255104a03c2e94b", "0x1e3418e825cb53d2eeef37fa587abf9bdfcc6415361f1f6a15731effcf9b2f58"];
-    var C_p = ["0x2c5f8013378ff540b33ae444d77dd17a407762f8940c05bb692ae13bdd5cec8f", "0x1a4fd227107bba27f57bbaa9e2338d990fd80dc6bb8a8dbc1bd69479cc737df3"];
-    var H = ["0x26c0d5e8b23bd7730636067406c59342081ca73cc6f2d2fb2acd6d676be80f1e", "0x419e311996e1c6d0aba5eba8d41357a64c92091873185a5e65bfad0186330f3"];
-    var K = ["0x539752f747c989c355aecf876d0f5aeae88796b9eed8709d4c212248be089ca", "0xa0a88a63c312f8dc82741c24885e6527a9f4e090d06c823151ebd7e9cea40cc"];
-    var I = [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1];
-
-    var A2 = ["0x22c995be6343ab71cf355ddf6912f947272fb9467e27bc2c7728803e2e5cef0d", "0x193e8b2819118da117f20e228888ba8b99df99b3f0e46540bf6bedfdddfe0519"];
-    var A2_p = ["0x1d50f515607e2ee120937ed2b27bf58b9bc51e26db340f005a3a3d7af46c70bd", "0x260f63ca943edeeda7b61317ea8cb51f8e8efa4dc2c24287b63ece680171a8"];
-    var B2 = [["0x210a3027aff915db1a1d0f2f4b6fb711afa1fc40beb9b9d14b20d10bd99c6784", "0x21603971c287bc164ff25a60438e47f9d37acd7de5e15ec4e644b749b74ef48e"], ["0x85b35a69d4d9c041dd97b372ebc35d5224dcfadf358158f190311c4738f8f1a", "0x2f11e9a3fc255717df5ad143d51225bee51b135682d98d63e0ac0a4f00ac5cb4"]];
-    var B2_p = ["0x128944fc520d2190eaa82433d2fe51bc9ea6447480a99bca4067303cdd887745", "0x28651444b33ca40b28d9fccef67e5b9b36eba3e528db29d519d1d8eb2c6787f0"];
-    var C2 = ["0x1a4fb442cb45dbb5ef1612091bf11d550bcd5e98d3234d16e2097fcf1a68f6ef", "0x77cc866d57d603e7ea6f1f932ef23f06bec9676e65179ca1a0323ce6c93f4af"];
-    var C2_p = ["0xda7e771e14149af6c7eacf9ea25ebc0b5b489187e2ebf30eeaa54b5136086d0", "0x23c30be80e8ded620598036d03ba087c82a32f4afa4d53d2c545cf70e72d749d"];
-    var H2 = ["0x114d04408118edfd4e825e36859f5bf22199e103de8ddacebd75dfd85cb5eab3", "0x8c33d0eb4ea98d30ece5cde27a77da88405f503cf89aa9a4b12bc51ec00b310"];
-    var K2 = ["0xce4e22a499577f6b5906877f04cb37b251b926358f91feb96a5041ede9d41eb", "0x229c104d3f7c3d13bd5575925acd01b4f7094a0202e8756047f0d39b001b1ff2"];
-    var I2 = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1];
+    var A2 = ["0x9245837ab0419e7b7dd2318d7bbd3f1a8dc01d1b2c22e0e75e0469d74f2254e", "0x2d40739a5c9bc3b6b4ff9fb1b187b044d02189a18b6d9f72319a952e36cb3b1d"];
+    var A2_p = ["0xcf3d5371f2ea5bf08d41d5387a7e3e150f8be5860502cdb603af8371c0101e5", "0x1e9999879d4d0e0d62de31c4a1f17dca66898224ce6d149c6bf688e940766ced"];
+    var B2 = [["0x128fa53276760e30863ac0a1249408004233c6956cf2c9548f8b2f8c86e9a00d", "0x209617a7acf7224f95f2e6efa4d9d43e4785458e55e79bc9da31d57596406d27"], ["0x2ac46a6628f887069d3c62ca2556c75c2ee696f9f803f0927ac5fca2a26ea4a", "0x245e373884daf9f0c8dc55927801596dde1010c69f01257ec6fc29ae7e4fda4f"]];
+    var B2_p = ["0x1a3a3674afd6fa2acc162cc330fd57a09819873b40f323cc78f5ab074f4ff2f4", "0x2f3b58d34192ecf8b96976b55c10498d4e1df553d26925d88777fbbe372ca27e"];
+    var C2 = ["0x3d2681f9e4acb6b66601188c666f772ab571b2b0a843bcae40e7b4e235c3277", "0xed3dd30c4666717ce2a30cef03bec005df0e5cdb71bf4488e7dbfe7f4aa5cbb"];
+    var C2_p = ["0x1c5dcf9ba2a1b964f774f8bab2b71e0a1a871cd8b7ec6990106b9f9f97c65c53", "0x25e57a35d9868d0aa1753da59b6de2ff5115873e925132b1cd31ffe8a36f718"];
+    var H2 = ["0x34b47d249a77e03257c12796099fe8c8c435223b309c8157579defd370c0f63", "0x2c3a96d7a38e10c79d958806549ced6c56791a650081bbd992c330c4ad07bffe"];
+    var K2 = ["0x5872b46e4a3ca06a63f2dbd1659faa293597b75c8f8f4f635231f853b8ac03a", "0xd8bd8131df9df0e11aca96d91a81375069213793ff5bbeb995563ebffbc81ec"];
+    var I2 = [0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1];
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
-      return app.addConsumerHash(eligibleHash, {from: owner, value: 0});
-    }).then(function() {
       return app.consumerSignUp(enteredHash, A, A_p, B, B_p, C, C_p, H, K, I, {from: consumer1, value: 0});
     }).then(function() {
       return app.noOfConsumers();
     }).then(function(consumers) {
       assert.equal(consumers.valueOf(), 1, "The number of consumers has not been incremented");
-      return app.addConsumerHash(eligibleHash1, {from: owner, value: 0});
-    }).then(function() {
       return app.consumerSignUp(enteredHash1, A2, A2_p, B2, B2_p, C2, C2_p, H2, K2, I2, {from: consumer2, value: 0});
     }).then(function() {
       return app.noOfConsumers();
@@ -210,16 +205,16 @@ contract('WorglCoin', function(accounts, app) {
 
   it("A consumer should not be able to sign up twice.", function() {
     var app;
-    var enteredHash = "0x2ec30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
-    var A = ["0xbc48bed6b63e82175e9e3cf017f26d5f71a2f36165f3580d02514e3f2f22ae9", "0x30587068f5a1f61193afccf71f265e277de27e0651204b325b6625c2a51bd77e"];
-    var A_p = ["0x2437272ec7e61998347ed609e003d1bb9c069903c211776a6d0fc8db65906b82", "0x8df6216b168a62a4507df93468cf0e58b5221919ef86642541ddbf54c15e589"];
-    var B = [["0x8d7ce8d510b51d0a25752103da900a7f3ab7ddfa2f73e2ba682a9139c25d1f7", "0x208deb2a232d751e5e0cac266ee43d55ff9c219a0b60cd1c61971cde841a705e"], ["0x623ac694f3992eaaf7953c7827ceb6ba4da4075789b3679b74f9abe0aea444", "0xf505cf3d2fa6c24b218ef86254f83fb450f1b63f9c93373e865f04d8c5b936e"]];
-    var B_p = ["0x19de1bdf2362573a606e72331c954183c9b98f8664d093682b73ab5fbe6d93a8", "0x35a943ce82ab2db74de5f6c68375de4029c0def09dae9245db7a18641b63125"];
-    var C = ["0x12bfe3da774a0dde4238ec240c136af4d0f089e5e769ba486255104a03c2e94b", "0x1e3418e825cb53d2eeef37fa587abf9bdfcc6415361f1f6a15731effcf9b2f58"];
-    var C_p = ["0x2c5f8013378ff540b33ae444d77dd17a407762f8940c05bb692ae13bdd5cec8f", "0x1a4fd227107bba27f57bbaa9e2338d990fd80dc6bb8a8dbc1bd69479cc737df3"];
-    var H = ["0x26c0d5e8b23bd7730636067406c59342081ca73cc6f2d2fb2acd6d676be80f1e", "0x419e311996e1c6d0aba5eba8d41357a64c92091873185a5e65bfad0186330f3"];
-    var K = ["0x539752f747c989c355aecf876d0f5aeae88796b9eed8709d4c212248be089ca", "0xa0a88a63c312f8dc82741c24885e6527a9f4e090d06c823151ebd7e9cea40cc"];
-    var I = [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1];
+    var enteredHash = "0x66bfd2155426f63f050358d409d5bb3cbc928327aede47d24b74e84ad78fce80";
+    var A = ["0xbb77a756f25dc4a552f8db4d18a2ebc1bb1afd9daf6acf577d2cbb7d854325b", "0x2bff206a5b92001be5865fc66bb20d73721e5cf2b87d8d4387502c1ebca9f7e2"];
+    var A_p = ["0x17fb19b5fc6b9cb214e1942facfa22bb03d94b45f5e7eefde682a8ef6d7118ed", "0x1a921ddf54167f0c0d2fed831b7b4c3ed32dbf33eccf503301f362ab40a58caf"];
+    var B = [["0x1679f5e46e7ad147ad283aa591e989494ed0aa3ccf2292b93d82811cd4ab2494", "0x2245db548c7b0fc51cfb5e7d869b6977c5bdb617f3cb1cc3aade2efbed03ffe5"], ["0x21dbbe117d8f99f421336b5c5906730bda57c923cb5eb5197bba4e99ed8ee8e7", "0x537df6caa38a64b7b2b0b9b3286bb7a298eccb60a29f3287c72b024ffb3c71"]];
+    var B_p = ["0x1564c23ee1043c9c964f5499084e969851e786a43335b8c8878ca11979dbdde6", "0x14ff3afff9fdd076c0a3335ee6c700ea120f0ad83e69b0506e2bcc0bb422b474"];
+    var C = ["0x8422040ac6a5eb7c50da9e4966986f59449582c04c64415f1f5886430f3cee9", "0x200668f89ad7a0fbbac875605fc2d361a697799163969421475116689c879c4d"];
+    var C_p = ["0x13bf2c64f25ccfab64bbbe736cb2bddec88d0287a39442d18c2a79b01645168e", "0x43f4154303841cd7849514844fccecb9f93233e81071f766fa025b9c2d90cf6"];
+    var H = ["0x267925dc922b66d87b716aef2d25e5a9cc2b79a3ff3c0ac572eb44cf4d79b265", "0x6859de13201825bc307070e37a0a6f7f17ca1e863b4d250507a841a4fec4031"];
+    var K = ["0xa7c310649802bbe6177e64765a4efd2eb2873c25c92931de44727699f2df69f", "0x20a5332886fc31b4b6f95d9fd4b94d4eb82b7bdb9006ed6a95c86b0a2a5d335"];
+    var I = [0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1];
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
@@ -229,7 +224,7 @@ contract('WorglCoin', function(accounts, app) {
 
   it("The contract owner should not be able to add a duplicate consumer hash.", function() {
     var app;
-    var eligibleHash = "0x2ec30eb3e345d4d9e4307aced0592a5ae3be47fe74b160e4d306f40c52f4f693";
+    var eligibleHash = "0x08e538c542c2a9415f44fad765d2992d6f7c5cc74dd6faf7b84df872be3ebcd6";
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
@@ -515,8 +510,6 @@ contract('WorglCoin', function(accounts, app) {
   });
 
   it("The owner of the contract should be able to fund the contract.", function() {
-    // http://ethdocs.org/en/latest/ether.html
-    // http://br549.mywebcommunity.org/ETHconvert/
     var app;
     var originalTokens;
     var amount = 1;
@@ -553,4 +546,5 @@ contract('WorglCoin', function(accounts, app) {
       assert.equal(newBusinessBalance, originalBusinessBalance + weiReceived, "The business did not receive the right payment.");
     });
   });
+
 });

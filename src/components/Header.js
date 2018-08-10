@@ -8,7 +8,8 @@ export class Header extends Component {
     this.state = {
       tokenValue: null,
       tokenBalanceValue: null,
-      contractBalanceValue: null
+      contractBalanceValue: null,
+      currentAccount: null,
     }
  };
 
@@ -18,9 +19,9 @@ export class Header extends Component {
     updatedState.tokenValue = (this.props.details.tokenValue * price).toFixed(2);
     updatedState.tokenBalanceValue = (this.props.details.tokenBalance * this.state.tokenValue).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     updatedState.contractBalanceValue = (this.props.details.contractBalance * price).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    updatedState.currentAccount = this.props.details.accountType;
     this.setState(updatedState);
 };
-
 
     render() {
       var pStyle = {
@@ -29,9 +30,7 @@ export class Header extends Component {
       textAlign: 'center'
     };
 
-    var currentAccount = this.props.details.accountType;
-    console.log(currentAccount);
-    if (currentAccount === 'Consumer') {
+    if (this.state.currentAccount === 'Consumer') {
       return (
             <div>
                 <header id="header">
@@ -51,9 +50,9 @@ export class Header extends Component {
       </header>
 
       {
-          currentAccount
+          this.state.currentAccount
           ? (
-            <p style={pStyle}>Signed in on account: {currentAccount} ({this.props.details.accountType} Account)<br/>
+            <p style={pStyle}>Signed in on account: {this.state.currentAccount} ({this.props.details.accountType} Account)<br/>
             Your token balance:  {this.props.details.tokenBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} UBI Tokens (US${this.state.tokenBalanceValue})<br/>
             Contract Balance: {this.props.details.contractBalance} Ether (US${this.state.contractBalanceValue}), Token Value: {this.props.details.tokenValue} Ether (US${this.state.tokenValue})</p>
           )
@@ -67,7 +66,7 @@ export class Header extends Component {
   );
     }
 
-    if (currentAccount === 'Business') {
+    if (this.state.currentAccount === 'Business') {
       return (
             <div>
                 <header id="header">
@@ -87,9 +86,9 @@ export class Header extends Component {
       </header>
 
       {
-          currentAccount
+          this.state.currentAccount
           ? (
-            <p style={pStyle}>Signed in on account: {currentAccount} ({this.props.details.accountType} Account)<br/>
+            <p style={pStyle}>Signed in on account: {this.state.currentAccount} ({this.props.details.accountType} Account)<br/>
             Your token balance:  {this.props.details.tokenBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} UBI Tokens (US${this.state.tokenBalanceValue})<br/>
             Contract Balance: {this.props.details.contractBalance} Ether (US${this.state.contractBalanceValue}), Token Value: {this.props.details.tokenValue} Ether (US${this.state.tokenValue})</p>
           )
@@ -103,7 +102,7 @@ export class Header extends Component {
   );
     }
 
-    if (currentAccount === 'Contract Owner') {
+    if (this.state.currentAccount === 'Contract Owner') {
       return (
             <div>
                 <header id="header">
@@ -122,7 +121,7 @@ export class Header extends Component {
       </header>
 
       {
-          currentAccount
+          this.state.currentAccount
           ? (
             <p style={pStyle}>
             Contract Balance: {this.props.details.contractBalance} Ether (US${this.state.contractBalanceValue}), Token Value: {this.props.details.tokenValue} Ether (US${this.state.tokenValue})</p>
