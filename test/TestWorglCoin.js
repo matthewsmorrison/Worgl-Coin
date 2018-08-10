@@ -343,10 +343,11 @@ contract('WorglCoin', function(accounts, app) {
     var app;
     var itemID = 0;
     var quantity = 3;
+    var delivery_location = 60;
 
     return WorglCoin.deployed().then(function(instance) {
       app=instance;
-      return expectThrow(app.buyItem(itemID, quantity, {from: randomAccount}));
+      return expectThrow(app.buyItem(itemID, quantity, delivery_location, {from: randomAccount}));
     });
   });
 
@@ -358,10 +359,11 @@ contract('WorglCoin', function(accounts, app) {
     var originalQuantity = 30;
     var price = 5;
     var originalBalance = 2000;
+    var delivery_location = 60;
 
     return WorglCoin.deployed().then(function(instance) {
       app=instance;
-      return app.buyItem(itemID, quantity, {from: consumer1});
+      return app.buyItem(itemID, quantity, delivery_location, {from: consumer1});
     }).then(function() {
       return app.noOfOrders();
     }).then(function(orders) {
@@ -372,6 +374,7 @@ contract('WorglCoin', function(accounts, app) {
       assert.equal(order[1].valueOf(), consumer1, "The consumer address has not been registered properly.");
       assert.equal(order[2].valueOf(), quantity, "The order quantity has not been registered properly.");
       assert.equal(order[3].valueOf(), false, "The order has been incorrectly marked as sent.");
+      assert.equal(order[4].valueOf(), delivery_location, "The order's delivery location is wrong.");
       return app.getItemDetails(itemID);
     }).then(function(item) {
       assert.equal(item[2].valueOf(), originalQuantity-quantity, "The item quantity has not been correctly decremented.");
@@ -394,6 +397,7 @@ contract('WorglCoin', function(accounts, app) {
     var price = 80000;
     var quantity = 1;
     var itemID = 1;
+    var delivery_location = 60;
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
@@ -402,7 +406,7 @@ contract('WorglCoin', function(accounts, app) {
       return app.noOfItems();
     }).then(function(items) {
       assert.equal(items.valueOf(), 2, "The number of items has not been incremented.");
-      return expectThrow(app.buyItem(itemID, quantity, {from: consumer1}));
+      return expectThrow(app.buyItem(itemID, quantity, delivery_location, {from: consumer1}));
     });
   });
 

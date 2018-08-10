@@ -32,6 +32,7 @@ contract WorglCoin {
     address customerAddress;
     uint quantityOrdered;
     bool sent;
+    uint delivery_location;
   }
 
   struct Item {
@@ -303,7 +304,7 @@ contract WorglCoin {
   * @param    _itemID             the ID of the item wishing to be bought
   * @return   _quantity           the quantity of the item wanting to be bought
   */
-  function buyItem(uint _itemID, uint _quantity) public isConsumer {
+  function buyItem(uint _itemID, uint _quantity, uint _delivery_location) public isConsumer {
     uint totalCost = allItems[_itemID].price * _quantity;
     require(consumerDetails[msg.sender].tokenBalance >= totalCost);
 
@@ -316,6 +317,7 @@ contract WorglCoin {
     newOrder.customerAddress = msg.sender;
     newOrder.quantityOrdered = _quantity;
     newOrder.sent = false;
+    newOrder.delivery_location = _delivery_location;
     allOrders[_orderID] = newOrder;
 
     // Increment the number of orders and trigger the event
@@ -420,11 +422,12 @@ contract WorglCoin {
   * @dev                          allows you to return all order details
   * @param    _orderID            the ID of the order
   */
-  function getOrderDetails(uint _orderID) public view returns(uint, address, uint, bool) {
+  function getOrderDetails(uint _orderID) public view returns(uint, address, uint, bool, uint) {
     return  ( allOrders[_orderID].itemID,
               allOrders[_orderID].customerAddress,
               allOrders[_orderID].quantityOrdered,
-              allOrders[_orderID].sent);
+              allOrders[_orderID].sent,
+              allOrders[_orderID].delivery_location);
   }
 
   /*

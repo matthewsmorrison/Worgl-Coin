@@ -19,6 +19,7 @@ export class OrderList extends React.Component {
                                   <th style={{textAlign:"left"}}>Item Details</th>
                                   <th style={{textAlign:"center"}}>Quantity Ordered</th>
                                   <th style={{textAlign:"center"}}>Been Sent</th>
+                                  <th style={{textAlign:"center"}}>Delivery Location</th>
                                   <th style={{textAlign:"center"}}>Action</th>
                               </tr>
                           </thead>

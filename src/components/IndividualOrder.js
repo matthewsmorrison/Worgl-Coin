@@ -113,6 +113,9 @@ export class IndividualOrder extends React.Component {
           }
         </td>
 
+        <td style={{textAlign:"center", verticalAlign:"middle"}}>{this.props.order[5].toNumber()}</td>
+
+
         {this.props.details.accountType === 'Consumer' && this.props.order[4] === false &&
           <td style={{textAlign:"center", verticalAlign:"middle"}}>
             <p>No Actions</p>
