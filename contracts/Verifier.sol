@@ -18,10 +18,7 @@ library Pairing {
         uint[2] X;
         uint[2] Y;
     }
-    /// @return the generator of G1
-    function P1() pure internal returns (G1Point) {
-        return G1Point(1, 2);
-    }
+
     /// @return the generator of G2
     function P2() pure internal returns (G2Point) {
         return G2Point(
@@ -121,25 +118,6 @@ library Pairing {
         p2[0] = a2;
         p2[1] = b2;
         p2[2] = c2;
-        return pairing(p1, p2);
-    }
-    /// Convenience method for a pairing check for four pairs.
-    function pairingProd4(
-            G1Point a1, G2Point a2,
-            G1Point b1, G2Point b2,
-            G1Point c1, G2Point c2,
-            G1Point d1, G2Point d2
-    ) internal returns (bool) {
-        G1Point[] memory p1 = new G1Point[](4);
-        G2Point[] memory p2 = new G2Point[](4);
-        p1[0] = a1;
-        p1[1] = b1;
-        p1[2] = c1;
-        p1[3] = d1;
-        p2[0] = a2;
-        p2[1] = b2;
-        p2[2] = c2;
-        p2[3] = d2;
         return pairing(p1, p2);
     }
 }

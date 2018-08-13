@@ -24,6 +24,15 @@ contract('WorglCoin', function(accounts, app) {
   var newValue;
 
   // Run the tests
+  it("The contract owner should be correctly identified", function() {
+    return WorglCoin.deployed().then(function(instance) {
+      return instance.getTokenBalance(owner);
+    }).then(function(tokenBalance) {
+      assert.equal(tokenBalance[0].valueOf(), 'Contract Owner', "The string returned was not correct");
+      assert.equal(tokenBalance[1].valueOf(), 0, "The number of tokens is not 0");
+    });
+  });
+
   it("The starting number of consumers should be 0", function() {
     return WorglCoin.deployed().then(function(instance) {
       return instance.noOfConsumers();
@@ -37,6 +46,25 @@ contract('WorglCoin', function(accounts, app) {
       return instance.noOfBusinesses();
     }).then(function(businesses) {
       assert.equal(businesses.valueOf(), 0, "The starting number of businesses is not 0");
+    });
+  });
+
+  it("There should be no orders for an address that is not signed up", function() {
+    return WorglCoin.deployed().then(function(instance) {
+      return instance.getAllOrders(consumer1);
+    }).then(function(allOrders) {
+      assert.equal(allOrders[0], undefined, "There is an order which shouldn't be there.");
+    });
+  });
+
+
+  it("An address that is not signed up should return 'Not Signed Up'", function() {
+    return WorglCoin.deployed().then(function(instance) {
+      app = instance;
+      return app.getTokenBalance(consumer1);
+    }).then(function(tokenBalance) {
+      assert.equal(tokenBalance[0].valueOf(), 'Not Signed Up', "The string returned was not correct");
+      assert.equal(tokenBalance[1].valueOf(), 0, "The number of tokens is not 0");
     });
   });
 
@@ -254,6 +282,10 @@ contract('WorglCoin', function(accounts, app) {
     }).then(function(allBusinesses) {
       assert.equal(allBusinesses[0].valueOf(), business1, "Business 1 has not been added to the list of businesses.");
       assert.equal(allBusinesses[1].valueOf(), business2, "Business 2 has not been added to the list of businesses.");
+      return app.getTokenBalance(business1);
+    }).then(function(tokenBalance) {
+      assert.equal(tokenBalance[0].valueOf(), 'Business', "The business was not correctly identified");
+      assert.equal(tokenBalance[1].valueOf(), 0, "The starting number of tokens for the business was not zero");
     });
   });
 
@@ -326,6 +358,9 @@ contract('WorglCoin', function(accounts, app) {
       app = instance;
       return app.sellItem(name, picture, quantity, price, {from: business1});
     }).then(function() {
+      return app.getAllItems();
+    }).then(function(allItems) {
+      assert.equal(allItems[0], itemID, "The item has not been added to all items.");
       return app.noOfItems();
     }).then(function(items) {
       assert.equal(items.valueOf(), 1, "The number of items has not been incremented.");
@@ -528,15 +563,22 @@ contract('WorglCoin', function(accounts, app) {
     });
   });
 
-  it("A business should receive the right amount of funds after a new distribution of tokens from the owner.", function() {
+  it("A business should be transferred the right amount of Ether after the owner resets the contract.", function() {
     var app;
     var originalBusinessBalance = web3.eth.getBalance(business1).toNumber();
     var noTokens = 15;
     var weiReceived = noTokens * newValue;
     var newBusinessBalance;
+    var businessDetails;
 
     return WorglCoin.deployed().then(function(instance) {
       app = instance;
+      return app.getTokenBalance(business1);
+    }).then(function(businessBalance) {
+      assert.equal(businessBalance[1].valueOf(), 15, "The token balance of the business is not correct");
+      return app.balance();
+    }).then(function(contractBalance) {
+      assert.equal(contractBalance.valueOf(), 1000000000000000000, "The contract balance is not correct");
       return app.resetTokenBalance({from: owner});
     }).then(function() {
       return app.getTokenBalance(consumer1);
@@ -544,9 +586,13 @@ contract('WorglCoin', function(accounts, app) {
       assert.equal(balance[1].valueOf(), 2000, "The token balance has not been updated");
     }).then(function() {
       return app.getBusinessDetails(business1);
-    }).then(function(business) {
-      newBusinessBalance = web3.eth.getBalance(business1).toNumber();
-      assert.equal(business[0].valueOf(), 0, "The business did not have its token decremented to 0.");
+    }).then(function(businessDetails) {
+      assert.equal(businessDetails[0].valueOf(), 0, "The business did not have its token decremented to 0.");
+      return app.balance();
+    }).then(function(contractBalance) {
+      assert.equal(contractBalance.valueOf(), 1000000000000000000-(weiReceived), "The contract balance is not correct");
+      return web3.eth.getBalance(business1).toNumber();
+    }).then(function(newBusinessBalance) {
       assert.equal(newBusinessBalance, originalBusinessBalance + weiReceived, "The business did not receive the right payment.");
     });
   });

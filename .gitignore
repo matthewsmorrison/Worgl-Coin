@@ -5,3 +5,5 @@ node_modules/
 tokenValue.xlsx
 coverage/
 coverage.json
+presentation/
+excel_backup/

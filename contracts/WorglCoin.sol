@@ -235,9 +235,10 @@ contract WorglCoin {
 
     // Pay out all funds to business
     for (uint j = 0; j<noOfBusinesses; j++) {
+      uint tokenBalance = businessDetails[businessAddresses[j]].tokenBalance;
       businessDetails[businessAddresses[j]].tokenBalance = 0;
-      businessAddresses[j].transfer(businessDetails[businessAddresses[j]].tokenBalance * tokenValue);
-      balance = sub(balance, businessDetails[businessAddresses[j]].tokenBalance * tokenValue);
+      balance = sub(balance, tokenBalance * tokenValue);
+      businessAddresses[j].transfer(tokenBalance * tokenValue);
     }
 
     emit TokenDistribution();
@@ -465,22 +466,6 @@ contract WorglCoin {
   /***********************************/
   /******** INTERNAL FUNCTIONS *******/
   /***********************************/
-
-  /*
-  * @dev Multiplies two numbers, throws on overflow.
-  */
-  function mul(uint256 a, uint256 b) internal pure returns (uint256 c) {
-    // Gas optimization: this is cheaper than asserting 'a' not being zero, but the
-    // benefit is lost if 'b' is also tested.
-    // See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522
-    if (a == 0) {
-      return 0;
-    }
-
-    c = a * b;
-    assert(c / a == b);
-    return c;
-  }
 
   /*
   * @dev Subtracts two numbers, throws on overflow (i.e. if subtrahend is greater than minuend).
