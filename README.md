@@ -28,6 +28,7 @@ In order to get the project up and running:
 $ git clone https://github.com/matthewsmorrison/Worgl-Coin
 $ cd Worgl-Coin
 $ npm install
+$ npm install -g ganache-cli
 $ ganache-cli
 $ npm run start
 $ node server
