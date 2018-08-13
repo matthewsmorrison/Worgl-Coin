@@ -140,15 +140,15 @@ contract WorglCoin {
   /*
   * @dev                          allows the owner of the contract to add a token recipient
   * @param    hash                SHA-256 hash of the consumer signing up
-  * @param    a                   [XX]
-  * @param    a_p                 [XX]
-  * @param    b                   [XX]
-  * @param    b_p                 [XX]
-  * @param    c                   [XX]
-  * @param    c_p                 [XX]
-  * @param    h                   [XX]
-  * @param    k                   [XX]
-  * @param    input               [XX]
+  * @param    a                   'a' paramater of the zero-knowledge proof
+  * @param    a_p                 'a_p' paramater of the zero-knowledge proof
+  * @param    b                   'b' paramater of the zero-knowledge proof
+  * @param    b_p                 'b_p' paramater of the zero-knowledge proof
+  * @param    c                   'c' paramater of the zero-knowledge proof
+  * @param    c_p                 'c_p' paramater of the zero-knowledge proof
+  * @param    h                   'h' paramater of the zero-knowledge proof
+  * @param    k                   'k' paramater of the zero-knowledge proof
+  * @param    input               public input paramaters of the zero-knowledge proof
   */
   function consumerSignUp(
     bytes32 hash,
