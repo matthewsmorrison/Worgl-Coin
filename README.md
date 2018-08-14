@@ -11,14 +11,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them.
+What things you need to install before installing this software:
 
-```
-Nodejs
-Ganache
-Truffle
-Web Browser With Metamask
-```
+* [NPM](https://www.npmjs.com/get-npm)
+* [Docker](https://www.docker.com/get-started)
+* [Metamask](https://metamask.io/)
 
 ### Installing
 
@@ -28,7 +25,6 @@ In order to get the project up and running:
 $ git clone https://github.com/matthewsmorrison/Worgl-Coin
 $ cd Worgl-Coin
 $ npm install
-$ npm install -g ganache-cli
 $ ganache-cli
 $ npm run start
 $ node server
